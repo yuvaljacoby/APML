@@ -1,4 +1,5 @@
 import pickle
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -277,56 +278,6 @@ def MVN_log_likelihood(X, model):
                                               allow_singular=False)))
 
 
-# def GSM_log_likelihood(X, model):
-#     """
-#     Given image patches and a GSM model, return the log likelihood of the patches
-#     according to the model.
-#
-#     :param X: a patch_sizeXnumber_of_patches matrix of image patches.
-#     :param model: A GSM_Model object.
-#     :return: The log likelihood of all the patches combined.
-#     """
-#     N = X.shape[0]
-#     k = model.mix.shape[0]
-#     inners = np.zeros((N, k))
-#     c_upper = np.ones((N, k))
-#     for kk in range(k):
-#         inners[:, kk] = np.log(model.mix[kk]) + multivariate_normal.logpdf(X, model.mean,
-#                                                                            model.cov[kk], allow_singular=True)
-#         c_upper[:, kk] = np.log(model.mix[kk]) + multivariate_normal.logpdf(X, model.mean, model.cov[kk], allow_singular=True)
-#
-#     c_lower = logsumexp(c_upper, axis=1).reshape(N, 1)
-#     c = c_upper - c_lower
-#
-#     for kk in range(k):
-#         inners[:, kk] += c[:, kk]
-#
-#     return 10000 + np.sum(inners)
-
-def keren_log_likelihood(X, model):
-    """
-    Given image patches and a GSM model, return the log likelihood of the patches
-    according to the model.
-
-    :param X: a patch_sizeXnumber_of_patches matrix of image patches.
-    :param model: A GSM_Model object.
-    :return: The log likelihood of all the patches combined.
-    """
-    N = X.shape[0]
-    k = model.mix.shape[0]
-    inners = np.zeros((N, k))
-    for kk in range(k):
-        inners[:, kk] = np.log(model.mix[kk]) + multivariate_normal.logpdf(X, np.zeros(64),
-                                                                           model.cov[kk],
-                                                                           allow_singular=True)
-    c_lower = logsumexp(inners, axis=1).reshape(N, 1)
-    c = inners - c_lower
-
-    for kk in range(k):
-        inners[:, kk] += c[:, kk]
-
-    return 1000000 + np.sum(inners)
-
 def GSM_log_likelihood(X, model):
     """
     Given image patches and a GSM model, return the log likelihood of the patches
@@ -344,7 +295,7 @@ def GSM_log_likelihood(X, model):
         likelihood[:, i] = np.log(model.mix[i]) + multivariate_normal.logpdf(X.T, mean=model.mean,
                                                                        cov=model.cov[i])
 
-    return 1000000 + np.sum(logsumexp(likelihood, axis=1))
+    return np.sum(logsumexp(likelihood, axis=1))
 
 def ICA_log_likelihood(X, model):
     """
@@ -392,127 +343,7 @@ def posterior_prob(patchs, pi, mean, cov_vec):
     denominator_log = logsumexp(c, axis=1).reshape(patchs.shape[1], 1)
     c = np.exp(c - denominator_log)
     return c
-    c = np.ones((N, k))  # probability of y given a guassian distribution, N x k
-    k = len(cov_vec)
-    log_pi = np.log(pi)
 
-    log_PDF_matrix = np.zeros((patchs.shape[1], k))
-    # PDF_matrix = np.zeros((patchs.shape[1], k))
-    # numerator = np.zeros((patchs.shape[1], k))
-    # denominator = np.zeros(patchs.shape[1])
-    for i in range(k):
-        # E step - we do it in log space and then take the exponent
-        log_PDF_matrix[:, i] = multivariate_normal.logpdf(patchs.T, cov=cov_vec[i], mean=mean)
-    #     PDF_matrix[:, i] = multivariate_normal.pdf(patchs.T, cov=cov_vec[i], mean=mean)
-    #     numerator[:, i] = PDF_matrix[:, i] * pi[i]
-    #     denominator += numerator[:, i]
-    #
-    # c = numerator - np.matlib.repeat(denominator[:, None], k, 1)
-    # return c
-    log_numerator = log_PDF_matrix + log_pi
-    log_denominator = logsumexp(log_PDF_matrix + log_pi, axis=1)
-    c = np.exp(log_numerator - np.matlib.repeat(log_denominator[:, None], k, 1))
-    return c
-
-
-def Expectation_Maximization(samples, k, model, max_iterations=100, learn_gsm=False):
-    '''
-    Run the iterative EM Algorithm on the given data.
-    :param samples: [numpy.ndarray] 2d array, each row contains a flattened image patch of size d. Nxd
-    :param k: number of guassians
-    :param max_iterations: stop at this number of iterations, if not yet converged
-    :param learn_gsm: if True, do not learn mean and assume cov=r*single_cov, where we need to learn r.
-    :return: mean, covariance, pi, list of log likelihoods for each iteration
-    '''
-    N, d = samples.shape
-
-    # initialize parameters
-    c = np.ones((N, k))  # probability of y given a guassian distribution, N x k
-    pi = model.mix  # mixture, probability of y, multiplication of c, 1 x k
-    covariance = model.cov  # k x d x d
-    r_squared = np.random.rand(k,1)
-    if learn_gsm:
-        mean = np.array([0] * d)
-    else:
-        mean = model.means  # k x d
-
-    # for gsm learning
-    if learn_gsm:
-        cov_tmp = samples - mean[0]
-        single_cov = cov_tmp.T.dot(cov_tmp) / N
-        base_cov = np.array([single_cov] * k)
-        covariance = base_cov
-
-    # convergence parameter
-    epsilon = 0.0001
-
-    loglikelihoods = []
-    iters = 0
-
-    while iters < max_iterations:
-        print("iteration:", iters)
-        for kk in range(k):
-            # calculate c: calculate numerator and denominator separately in logspace,
-            # and then divide and revert to original space
-            c[:, kk] = np.log(pi[kk]) + multivariate_normal.logpdf(samples, mean,
-                                                                   covariance[kk], allow_singular=True)
-
-        denominator_log = logsumexp(c, axis=1).reshape(N, 1)
-        c = np.exp(c - denominator_log)
-
-        # calculate pi
-        pi = np.sum(c, axis=0) / N
-
-        # calculate mu (mean)
-        if not learn_gsm:
-            for kk in range(k):
-                mean[kk] = np.dot(c[:, kk].T, samples) / np.sum(c[:, kk])
-
-        # calculate r
-        if learn_gsm:
-            for kk in range(k):
-                numerator = np.sum(c[:, kk] * np.diag(samples.dot(np.linalg.pinv(base_cov[kk])).dot(samples.T)))
-                r_squared[kk] = numerator / (d * np.sum(c[:, kk]))
-
-        # calculate Sigma (covariance)
-        for kk in range(k):
-            if learn_gsm:
-                covariance[kk] = base_cov[kk] * r_squared[kk]
-            else:
-                covariance[kk] = np.dot(c[:, kk] * (samples - mean[kk]).T, (samples - mean[kk]))
-                covariance[kk] = covariance[kk] / np.sum(c[:, kk])
-
-        # calculate log likelihood of parameters
-        tmp_model = GSM_Model(covariance, pi)
-        loglikelihoods.append(keren_log_likelihood(samples, tmp_model))
-        print("likelihood:", loglikelihoods[-1])
-        if iters >= 2 and np.abs(loglikelihoods[iters] - loglikelihoods[iters-1]) < epsilon:
-            break
-        iters += 1
-
-    # plot_lle(loglikelihoods)
-    return mean, covariance, pi, loglikelihoods
-
-
-def keren_GSM(X, k):
-    X = X.transpose()
-
-    #initialize model
-    mean = np.zeros((k, 64))
-    cov_tmp = X - mean[0]
-    single_cov = cov_tmp.T.dot(cov_tmp) / X.shape[0]
-    base_cov = np.array([single_cov] * k)
-    for kk in range(k):
-        base_cov[kk] /= (kk+1)
-    mix = np.array([float(1 / k)] * k)
-    # gmm_model = GMM_Model(mix, mean, base_cov)
-    initial_model = GSM_Model(base_cov, mix)
-
-    learnt_mean, learnt_cov, learnt_mix, lle = Expectation_Maximization(X, k, initial_model,
-                                                                        max_iterations=4,
-                                                                        learn_gsm=True)
-    learnt_model = GSM_Model(learnt_cov, learnt_mix)
-    return learnt_model
 
 def learn_GSM(X, k):
     """
@@ -531,16 +362,12 @@ def learn_GSM(X, k):
 
     # start with random scalars
     # TODO: maybe better to do diffrenet initialization
-    r_y = np.array(np.random.normal(size=k))
+    r_y = np.array(np.random.rand(k)) # * 10 # np.array(np.random.normal(size=k))
     d = X.shape[0]
     mean = np.zeros(d)
 
     cov = np.cov(X)
     # It's a k length vector, where each cell is the scaled cov matrix
-    # cov_vec = np.zeros((k, d, d))
-    # cov_vec = np.array([(y+1) * cov for y in range(k)])
-    # r_y = np.array(np.random.normal(size=k))
-    r_y = np.array(np.random.rand(k)) * 10
     cov_vec = np.array([r_y[i] * cov for i in range(k)])
     assert(cov_vec[0, :, :].shape == cov.shape)
 
@@ -552,43 +379,26 @@ def learn_GSM(X, k):
         print("iteration:", j)
         # E step - update patch probabilty for each gaussian
         c = posterior_prob(X, pi, mean, cov_vec)
-        # k = len(cov_vec)
-        # log_pi = np.log(pi)
-        # log_PDF_matrix = np.zeros((X.shape[1], k))
-        # for i in range(k):
-        #     # E step - we do it in log space and then take the exponent
-        #     log_PDF_matrix[:, i] = multivariate_normal.logpdf(X.T, cov=cov_vec[i], mean=mean)
-        #
-        # log_numerator = log_PDF_matrix + log_pi
-        # log_denominator = logsumexp(log_PDF_matrix + log_pi, axis=1)
-        # c = np.exp(log_numerator - np.matlib.repeat(log_denominator[:, None], k, 1))
-        #
+
         # M step - update pi
         pi_y = np.sum(c, axis=0) / X.shape[1]
         # test the probabilities are still valid
         assert (np.abs(sum(pi_y) - 1) < 0.05)
         assert ((np.abs(np.sum(c, axis=1) - 1) < 0.05).all())
 
-
-        # numeator_mul = np.diag(X.T.dot(np.linalg.pinv(cov)).dot(X))
         for i in range(k):
             numerator = np.sum(c[:, i] * numeator_mul)
             r_y[i] = numerator / (d * np.sum(c[:, i]))
-            if np.isnan(r_y).any():
-                print(np.sum(c, axis=1))
 
-        # numeator_mul = X.T @ (np.linalg.pinv(cov) @ X)
-        # r_y = np.sum(c @ numeator_mul, axis=1) / d * np.sum(c, axis=1)
-        print("r_y:", r_y)
         # Update the cov matrix
         # TODO: Can remove the loop?
         cov_vec = np.array([r_y[i] * cov for i in range(k)])
-        # cov_vec = np.outer(r_y, cov).reshape((k,d,d))
+
         likelihood_results.append(GSM_log_likelihood(X, GSM_Model(cov_vec, pi_y, mean)))
         print('likelihood_results:', likelihood_results[-1])
-        # Add condition on likelihood
 
-        if j > 2 and np.abs(likelihood_results[-1] - likelihood_results[-2]) < EM_STOP_EPSILION:
+        if len(likelihood_results) >= 2 and \
+                likelihood_results[-1] - likelihood_results[-2] < EM_STOP_EPSILION:
             return GSM_Model(cov_vec, pi_y, mean)
     print("likelihood:", likelihood_results)
     return GSM_Model(cov_vec, pi_y, mean)
@@ -674,13 +484,6 @@ def GSM_Denoise(Y, gsm_model, noise_std):
     return np.sum(weniner_vec, axis=0)
 
 
-# def MLE_multidimensional_gaussian(x, mu, cov):
-#     d = cov.shape[0]
-#     exp = np.exp(-0.5 * (x - mu).transpose() * cov * (x - mu))
-#     norm_factor = 1 / np.sqrt(np.power((2 * np.pi), d) * np.linalg.det(cov))
-#     return norm_factor * exp
-
-
 def ICA_Denoise(Y, ica_model, noise_std):
     """
     Denoise every column in Y, assuming an ICA model and gaussian white noise.
@@ -701,9 +504,8 @@ def learn(learn_func, path='train_images.pickle', k=None, patch_size=(8, 8)):
     with open(path, 'rb') as f:
         train_pictures = pickle.load(f)
 
-    # gray_train_pictures = grayscale_and_standardize(train_pictures)
     patches = sample_patches(train_pictures, psize=patch_size, n=20000)
-    # patches = np.array([np.random.normal(0, 1, 30), np.random.normal(0,2,30)])
+
     if k:
         return learn_func(patches, k)
     return learn_func(patches)
@@ -713,14 +515,13 @@ if __name__ == '__main__':
 
     with open('test_images.pickle', 'rb') as f:
         test_pictures = pickle.load(f)
-    test_pictures = grayscale_and_standardize(test_pictures)
+    # test_pictures = grayscale_and_standardize(test_pictures)
     # model = learn(learn_MVN)
     # denoise = MVN_Denoise
 
-    import os
+
     if not os.path.exists("GSM_model.pickle"):
         model = learn(learn_GSM, k=3)
-        # model = learn(learn_GSM, k=3)
         with open("GSM_model.pickle", "wb") as f:
             pickle.dump(model, f)
     else:
@@ -730,7 +531,7 @@ if __name__ == '__main__':
 
     pic = np.random.choice(test_pictures)
     # pic = np.random
-    test_denoising(pic, model, denoise, noise_range=([0.01, 0.2]))
+    test_denoising(pic, model, denoise, noise_range=([0.01]))
 
     # pics = grayscale_and_standardize(test_pictures)
     # for pic in pics:
