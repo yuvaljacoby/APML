@@ -240,7 +240,7 @@ class GSM_Model:
     mean - k-length mean vector for the each of the gaussians
     """
 
-    def __init__(self, cov, mix, mean = None):
+    def __init__(self, cov, mix):
         self.cov = cov
         self.mix = mix
         self.mean = np.array([0] * cov.shape[1])
@@ -260,8 +260,10 @@ class ICA_Model:
 
     def __init__(self, P, vars, mix):
         self.P = P
-        self.vars = vars
+        # Save it as cov so will be like GSM
+        self.cov = vars
         self.mix = mix
+        self.mean = np.array([0] * vars.shape[1])
 
 
 def MVN_log_likelihood(X, model):
@@ -297,6 +299,7 @@ def GSM_log_likelihood(X, model):
 
     return np.sum(logsumexp(likelihood, axis=1))
 
+
 def ICA_log_likelihood(X, model):
     """
     Given image patches and an ICA model, return the log likelihood of the patches
@@ -307,7 +310,7 @@ def ICA_log_likelihood(X, model):
     :return: The log likelihood of all the patches combined.
     """
 
-    # TODO: YOUR CODE HERE
+    return GSM_log_likelihood(X, model)
 
 
 def learn_MVN(X):
@@ -381,9 +384,9 @@ def learn_GSM(X, k):
         c = posterior_prob(X, pi, mean, cov_vec)
 
         # M step - update pi
-        pi_y = np.sum(c, axis=0) / X.shape[1]
+        pi = np.sum(c, axis=0) / X.shape[1]
         # test the probabilities are still valid
-        assert (np.abs(sum(pi_y) - 1) < 0.05)
+        assert (np.abs(sum(pi) - 1) < 0.05)
         assert ((np.abs(np.sum(c, axis=1) - 1) < 0.05).all())
 
         for i in range(k):
@@ -394,14 +397,60 @@ def learn_GSM(X, k):
         # TODO: Can remove the loop?
         cov_vec = np.array([r_y[i] * cov for i in range(k)])
 
-        likelihood_results.append(GSM_log_likelihood(X, GSM_Model(cov_vec, pi_y, mean)))
+        likelihood_results.append(GSM_log_likelihood(X, GSM_Model(cov_vec, pi)))
         print('likelihood_results:', likelihood_results[-1])
 
         if len(likelihood_results) >= 2 and \
                 likelihood_results[-1] - likelihood_results[-2] < EM_STOP_EPSILION:
-            return GSM_Model(cov_vec, pi_y, mean)
+            return GSM_Model(cov_vec, pi)
     print("likelihood:", likelihood_results)
-    return GSM_Model(cov_vec, pi_y, mean)
+    return GSM_Model(cov_vec, pi)
+
+
+def EM(X, k, model, likelihood_func):
+    # start with random scalars
+    # TODO: maybe better to do diffrenet initialization
+    r_y = np.array(np.random.rand(k))  # * 10 # np.array(np.random.normal(size=k))
+    d = X.shape[0]
+    mean = np.zeros(d)
+    cov = model.cov
+    pi = model.mix
+    # It's a k length vector, where each cell is the scaled cov matrix
+    cov_vec = np.array([r_y[i] * cov for i in range(k)])
+    assert (cov_vec[0, :, :].shape == cov.shape)
+
+    likelihood_results = []
+
+    numeator_mul = np.diag(X.T.dot(np.linalg.pinv(cov)).dot(X))
+    r_y = np.zeros(k)
+    for j in range(1, EM_MAX_ITERATIONS):
+        print("iteration:", j)
+        # E step - update patch probabilty for each gaussian
+        c = posterior_prob(X, pi, mean, cov_vec)
+
+        # M step - update pi
+        pi = np.sum(c, axis=0) / X.shape[1]
+        # test the probabilities are still valid
+        assert (np.abs(sum(pi) - 1) < 0.05)
+        assert ((np.abs(np.sum(c, axis=1) - 1) < 0.05).all())
+
+        for i in range(k):
+            numerator = np.sum(c[:, i] * numeator_mul)
+            r_y[i] = numerator / (d * np.sum(c[:, i]))
+
+        # Update the cov matrix
+        # TODO: Can remove the loop?
+        cov_vec = np.array([r_y[i] * cov for i in range(k)])
+        model.cov = cov_vec
+        model.mix = pi
+        likelihood_results.append(likelihood_func(X, model))
+        print('likelihood_results:', likelihood_results[-1])
+        if len(likelihood_results) >= 2 and \
+                likelihood_results[-1] - likelihood_results[-2] < EM_STOP_EPSILION:
+            return cov_vec, pi, likelihood_results
+    return cov_vec, pi, likelihood_results
+
+
 
 
 def learn_ICA(X, k):
@@ -417,7 +466,15 @@ def learn_ICA(X, k):
     :return: A trained ICA_Model object.
     """
 
-    # TODO: YOUR CODE HERE
+    cov = np.cov(X)
+    # It's a k length vector, where each cell is the scaled cov matrix
+    var, P = np.linalg.eig(cov)
+    vars = var * np.eye(cov.shape[0], cov.shape[1])
+    s = np.matlib.matmul(P.T, X)
+    pi = np.array([1 / k] * k)
+    base_model = ICA_Model(P, vars, pi)
+    cov_vec, mix, likelihood = EM(s, k, base_model, ICA_log_likelihood)
+    return ICA_Model(P, cov_vec, mix)
 
 
 def weiner(Y, mu, cov, noise_std):
@@ -469,12 +526,9 @@ def GSM_Denoise(Y, gsm_model, noise_std):
     mean = gsm_model.mean
     weniner_vec = np.zeros((k, d, Y.shape[1]))
 
-    # print(Y.shape, gsm_model.mix.shape,len(mean), gsm_model.cov.shape)
     c = posterior_prob(Y, gsm_model.mix, mean, gsm_model.cov +
                        (noise_std * np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[
-                           2])
-                                              for _
-                                              in range(3)])))
+                           2]) for _ in range(k)])))
 
 
 
@@ -497,8 +551,9 @@ def ICA_Denoise(Y, ica_model, noise_std):
     :return: a DxM matrix of denoised image patches.
     """
 
-    # TODO: YOUR CODE HERE
-
+    s_noise = np.matlib.matmul(ica_model.P.T, Y)
+    s_denoise = GSM_Denoise(s_noise, GSM_Model(ica_model.cov, ica_model.mix), noise_std)
+    return np.matlib.matmul(ica_model.P, s_denoise)
 
 def learn(learn_func, path='train_images.pickle', k=None, patch_size=(8, 8)):
     with open(path, 'rb') as f:
@@ -515,24 +570,27 @@ if __name__ == '__main__':
 
     with open('test_images.pickle', 'rb') as f:
         test_pictures = pickle.load(f)
-    # test_pictures = grayscale_and_standardize(test_pictures)
+    test_pictures = grayscale_and_standardize(test_pictures)
     # model = learn(learn_MVN)
     # denoise = MVN_Denoise
 
 
-    if not os.path.exists("GSM_model.pickle"):
-        model = learn(learn_GSM, k=3)
-        with open("GSM_model.pickle", "wb") as f:
-            pickle.dump(model, f)
-    else:
-        with open("GSM_model.pickle", "rb") as f:
-            model = pickle.load(f)
-    denoise = GSM_Denoise
+    # if not os.path.exists("GSM_model.pickle"):
+    #     model = learn(learn_GSM, k=3)
+    #     with open("GSM_model.pickle", "wb") as f:
+    #         pickle.dump(model, f)
+    # else:
+    #     with open("GSM_model.pickle", "rb") as f:
+    #         model = pickle.load(f)
+    # model = learn(learn_GSM, k=3)
+    # denoise = GSM_Denoise
+    # pic = np.random.choice(test_pictures)
+    # test_denoising(pic, model, denoise, noise_range=([0.1]))
 
+    model = learn(learn_ICA, k=10)
+    denoise = ICA_Denoise
     pic = np.random.choice(test_pictures)
-    # pic = np.random
-    test_denoising(pic, model, denoise, noise_range=([0.01]))
-
+    test_denoising(pic, model, denoise, noise_range=([0.1]))
     # pics = grayscale_and_standardize(test_pictures)
     # for pic in pics:
     #     test_denoising(pic, model, denoise)
