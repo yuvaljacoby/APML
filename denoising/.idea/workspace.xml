@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/Image_Denoising.py" line="643" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="6c602b9c-4cb4-4377-813a-3b12e601d30f" name="Default Changelist" comment="" />
+    <list default="true" id="6c602b9c-4cb4-4377-813a-3b12e601d30f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GSM_model.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/GSM_model.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Image_Denoising.py" beforeDir="false" afterPath="$PROJECT_DIR$/Image_Denoising.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,34 +19,35 @@
     <session id="-2008296523">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="1" />
-          <entry key="py" value="12603" />
+          <entry key="py" value="16333" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="1" />
-          <entry key="Python" value="12603" />
+          <entry key="Python" value="16333" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="33" />
+          <entry key="py" value="38" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="33" />
+          <entry key="Python" value="38" />
         </counts>
       </usages-collector>
     </session>
@@ -49,56 +57,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Image_Denoising.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="327">
-              <caret line="732" column="38" selection-start-line="732" selection-start-column="38" selection-end-line="732" selection-end-column="38" />
+            <state relative-caret-position="257">
+              <caret line="387" lean-forward="true" selection-start-line="387" selection-end-line="387" />
               <folding>
-                <element signature="e#0#13#0" expanded="true" />
-                <element signature="e#223#810#0" />
-                <element signature="e#223#364#1" />
-                <element signature="e#669#795#0" />
-                <element signature="e#852#1464#0" />
-                <element signature="e#852#1260#1" />
-                <element signature="e#1528#2508#0" />
-                <element signature="e#1528#1875#1" />
-                <element signature="e#2582#3685#0" />
-                <element signature="e#2582#2989#1" />
-                <element signature="e#3769#5079#0" />
-                <element signature="e#3769#4520#1" />
-                <element signature="e#5124#5677#0" />
-                <element signature="e#5124#5361#1" />
-                <element signature="e#6135#6685#1" />
-                <element signature="e#7974#8299#0" />
-                <element signature="e#8756#9260#0" />
-                <element signature="e#8756#9154#1" />
-                <element signature="e#9202#9260#0" />
-                <element signature="e#9473#9861#0" />
-                <element signature="e#9985#10020#0" />
-                <element signature="e#10021#10342#0" />
-                <element signature="e#10021#10314#1" />
-                <element signature="e#10367#10663#0" />
-                <element signature="e#12561#15384#0" />
-                <element signature="e#16753#17480#0" />
-                <element signature="e#11103#11587#0" />
-                <element signature="e#11103#11559#1" />
-                <element signature="e#12188#12673#0" />
-                <element signature="e#11636#12101#1" />
-                <element signature="e#15944#16746#0" />
-                <element signature="e#12761#13232#0" />
-                <element signature="e#12761#13204#1" />
-                <marker date="1541353294498" expanded="true" signature="25118:25289" ph="..." />
-                <marker date="1541353294498" expanded="true" signature="25330:25335" ph="..." />
-                <marker date="1541353294498" expanded="true" signature="26262:27100" ph="..." />
-                <marker date="1541353294498" expanded="true" signature="26291:26296" ph="..." />
+                <element signature="e#9460#9612#0" />
+                <element signature="e#9653#10098#0" />
+                <element signature="e#11194#11504#0" />
+                <element signature="e#16629#17085#1" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python3.5/dist-packages/scipy/stats/_multivariate.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="727" column="17" selection-start-line="727" selection-start-column="17" selection-end-line="727" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -106,15 +72,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/keren/keren.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="58">
-              <caret line="480" column="7" selection-start-line="480" selection-start-column="7" selection-end-line="486" selection-end-column="39" />
+            <state relative-caret-position="61">
+              <caret line="504" column="25" lean-forward="true" selection-start-line="504" selection-start-column="25" selection-end-line="504" selection-end-column="25" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
-                <element signature="e#18929#19425#0" />
-                <element signature="e#19474#20070#0" />
-                <element signature="e#20119#21145#0" />
-                <element signature="e#21195#22395#0" />
-                <element signature="e#22444#23261#0" />
               </folding>
             </state>
           </provider>
@@ -143,45 +104,48 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>max</find>
-      <find>model.mean</find>
-      <find>multivariate_normal.logpdf</find>
-      <find>N = 2000while iters &lt; max_iterations:</find>
-      <find>while iters &lt; max_iterations:</find>
-      <find>logsumexp</find>
-      <find>matlib</find>
       <find>posterior_prob</find>
-      <find>model.cov</find>
-      <find>expect</find>
-      <find>np.random.rand</find>
+      <find>likelihood</find>
+      <find>print(k</find>
+      <find>GSM_de</find>
+      <find>[:, None</find>
+      <find>ICA_den</find>
+      <find>GSM_Denoise</find>
+      <find>logpdf.sh</find>
+      <find>posterior</find>
+      <find>ICA_denoise</find>
+      <find>ICA_</find>
+      <find>ICA_lo</find>
+      <find>ICA_log</find>
+      <find>ICA_log_likelihood</find>
+      <find>EM</find>
+      <find>Exp</find>
+      <find>Expec</find>
       <find>GSM_log_likelihood</find>
-      <find>GSM_log</find>
-      <find>keren_log_likelihood</find>
-      <find>k=2</find>
-      <find>patches =</find>
+      <find>logpdf.sha</find>
+      <find>likelihood_res</find>
+      <find>x_s</find>
+      <find>learn_ICA</find>
+      <find>mix:</find>
+      <find>logpdf.s</find>
+      <find>iteration:</find>
+      <find>GSM_</find>
+      <find>EM(</find>
+      <find>mix</find>
+      <find>print</find>
       <find>learn_GSM</find>
-      <find>base_cov</find>
-      <find>Expectation_Maximization</find>
-      <find>cov_ve</find>
-      <find>cov_vec</find>
-      <find>post</find>
-      <find>r_Y</find>
-      <find>r_y</find>
-      <find>learn_GS</find>
-      <find>for</find>
-      <find>repmat</find>
-      <find>nois</find>
-      <find>deno</find>
-      <find>de</find>
     </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Image Denoising.py" />
         <option value="$PROJECT_DIR$/tests.py" />
-        <option value="$PROJECT_DIR$/keren/keren.py" />
         <option value="$USER_HOME$/PycharmProjects/Yad2Scraping/scrap.py" />
+        <option value="$PROJECT_DIR$/keren/keren.py" />
         <option value="$PROJECT_DIR$/Image_Denoising.py" />
       </list>
     </option>
@@ -209,6 +173,7 @@
       </profile-state>
     </entry>
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -359,7 +324,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
+    <frame x="64" y="-11" width="1303" height="780" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.1627543" />
@@ -367,14 +332,14 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.5195618" side_tool="true" visible="true" weight="0.35448918" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.48043817" weight="0.44272447" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.52973396" side_tool="true" visible="true" weight="0.3431677" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.47026604" weight="0.3773292" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.32919255" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -417,88 +382,125 @@
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/keren/keren.py</url>
-          <line>483</line>
-          <option name="timeStamp" value="66" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
-          <line>410</line>
-          <option name="timeStamp" value="87" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
-          <line>593</line>
-          <option name="timeStamp" value="92" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/PycharmProjects/Yad2Scraping/scrap.py</url>
           <line>57</line>
           <option name="timeStamp" value="98" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
+          <line>626</line>
+          <option name="timeStamp" value="117" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/keren/keren.py</url>
+          <line>483</line>
+          <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
+          <line>478</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
+          <line>312</line>
+          <option name="timeStamp" value="150" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
+          <line>475</line>
+          <option name="timeStamp" value="155" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="(noise_std * np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]))" language="Python" />
-        <watch expression="np.array([np.eye(gsm_model.cov[1], gsm_model.cov[2]) for _ in range(3)])" language="Python" />
+        <watch expression="cov_vec" language="Python" />
+        <watch expression="model.cov" language="Python" />
+        <watch expression="c" language="Python" />
+        <watch expression="pi" language="Python" />
+        <watch expression="model.mix[i], model.cov[i]" language="Python" />
+        <watch expression="(c[i, :] * (x_squaure)).shape" language="Python" />
+        <watch expression="x_squaure.shape" language="Python" />
+        <watch expression="c[:, i].T.dot(x_squaure)" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="watch">
       <expression>
-        <expression-string>(noise_std * np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]))</expression-string>
+        <expression-string>model.cov</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.array([np.eye(gsm_model.cov[1], gsm_model.cov[2]) for _ in range(3)])</expression-string>
+        <expression-string>mode.cov</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(noise_std * np.array([np.eye(gsm_model.cov[1], gsm_model.cov[2]) for _ in range(3)]))</expression-string>
+        <expression-string>c[:, i].T.dot(x_squaure)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]) * noise_std) + gsm_model.cov</expression-string>
+        <expression-string>c[:, i].dot(x_squaure)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]) * noise_std) + gsm</expression-string>
+        <expression-string>c[:, i].shape</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]) * noise_std)</expression-string>
+        <expression-string>c.shape</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]) * noise_std)</expression-string>
+        <expression-string>x_squaure.shape</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]) ( noise_std)</expression-string>
+        <expression-string>x_squaure</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)])</expression-string>
+        <expression-string>(c[i, :] * (x_squaure)).shape</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>np.array([np.eye(gsm_model.cov.shape[1], gsm_model.cov.shape[2]) for _ in range(3)]).shape</expression-string>
+        <expression-string>(c[:, i].T * (x_squaure)).shape</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
     <expressions id="setValue">
+      <expression>
+        <expression-string>None</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>[[1. 1. 1.]
+ [1. 1. 1.]
+ [1. 1. 1.]
+ ...
+ [1. 1. 1.]
+ [1. 1. 1.]
+ [1. 1. 1.]]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>cov_vec.shape</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>[[-0.07924625  0.25428317 -0.05848154 ... -0.35852468  0.1288165
   -0.02802664]
@@ -613,23 +615,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/numpy/linalg/linalg.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="88" selection-start-line="88" selection-end-line="88" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <marker date="1540910205174" expanded="true" signature="493:711" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python3.5/dist-packages/sklearn/mixture/base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2264">
@@ -689,77 +674,63 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/keren/keren.py">
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/numpy/lib/twodim_base.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="58">
-          <caret line="480" column="7" selection-start-line="480" selection-start-column="7" selection-end-line="486" selection-end-column="39" />
+        <state relative-caret-position="92">
+          <caret line="185" selection-start-line="140" selection-end-line="194" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="13" selection-start-line="13" selection-end-line="13" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
-            <element signature="e#18929#19425#0" />
-            <element signature="e#19474#20070#0" />
-            <element signature="e#20119#21145#0" />
-            <element signature="e#21195#22395#0" />
-            <element signature="e#22444#23261#0" />
+            <marker date="1540910205174" expanded="true" signature="493:711" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/local/lib/python3.5/dist-packages/scipy/stats/_multivariate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="727" column="17" selection-start-line="727" selection-start-column="17" selection-end-line="727" selection-end-column="17" />
+        <state relative-caret-position="128">
+          <caret line="487" selection-start-line="487" selection-end-line="487" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/numpy/lib/twodim_base.py">
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/numpy/linalg/linalg.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="533" column="18" selection-start-line="533" selection-start-column="16" selection-end-line="533" selection-end-column="18" />
+        <state relative-caret-position="106">
+          <caret line="203" selection-start-line="203" selection-end-line="203" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/matplotlib/path.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/keren/keren.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="61">
+          <caret line="504" column="25" lean-forward="true" selection-start-line="504" selection-start-column="25" selection-end-line="504" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Image_Denoising.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="732" column="38" selection-start-line="732" selection-start-column="38" selection-end-line="732" selection-end-column="38" />
+        <state relative-caret-position="257">
+          <caret line="387" lean-forward="true" selection-start-line="387" selection-end-line="387" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
-            <element signature="e#223#810#0" />
-            <element signature="e#223#364#1" />
-            <element signature="e#669#795#0" />
-            <element signature="e#852#1464#0" />
-            <element signature="e#852#1260#1" />
-            <element signature="e#1528#2508#0" />
-            <element signature="e#1528#1875#1" />
-            <element signature="e#2582#3685#0" />
-            <element signature="e#2582#2989#1" />
-            <element signature="e#3769#5079#0" />
-            <element signature="e#3769#4520#1" />
-            <element signature="e#5124#5677#0" />
-            <element signature="e#5124#5361#1" />
-            <element signature="e#6135#6685#1" />
-            <element signature="e#7974#8299#0" />
-            <element signature="e#8756#9260#0" />
-            <element signature="e#8756#9154#1" />
-            <element signature="e#9202#9260#0" />
-            <element signature="e#9473#9861#0" />
-            <element signature="e#9985#10020#0" />
-            <element signature="e#10021#10342#0" />
-            <element signature="e#10021#10314#1" />
-            <element signature="e#10367#10663#0" />
-            <element signature="e#12561#15384#0" />
-            <element signature="e#16753#17480#0" />
-            <element signature="e#11103#11587#0" />
-            <element signature="e#11103#11559#1" />
-            <element signature="e#12188#12673#0" />
-            <element signature="e#11636#12101#1" />
-            <element signature="e#15944#16746#0" />
-            <element signature="e#12761#13232#0" />
-            <element signature="e#12761#13204#1" />
-            <marker date="1541353294498" expanded="true" signature="25118:25289" ph="..." />
-            <marker date="1541353294498" expanded="true" signature="25330:25335" ph="..." />
-            <marker date="1541353294498" expanded="true" signature="26262:27100" ph="..." />
-            <marker date="1541353294498" expanded="true" signature="26291:26296" ph="..." />
+            <element signature="e#9460#9612#0" />
+            <element signature="e#9653#10098#0" />
+            <element signature="e#11194#11504#0" />
+            <element signature="e#16629#17085#1" />
           </folding>
         </state>
       </provider>
