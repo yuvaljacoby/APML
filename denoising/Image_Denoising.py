@@ -7,9 +7,10 @@ import numpy.matlib
 from scipy.misc import logsumexp
 from scipy.stats import multivariate_normal
 from skimage.util import view_as_windows as viewW
+import time
 
-EM_MAX_ITERATIONS = 200
-EM_STOP_EPSILION = 0.001
+EM_MAX_ITERATIONS = 20
+EM_STOP_EPSILION = 0.01
 
 def images_example(path='train_images.pickle'):
     """
@@ -261,9 +262,9 @@ class ICA_Model:
     def __init__(self, P, vars, mix):
         self.P = P
         # Save it as cov so will be like GSM
-        self.cov = vars
+        self.vars = vars
         self.mix = mix
-        self.mean = np.array([0] * vars.shape[1])
+        # self.mean = np.array([0] * vars.shape[1])
 
 
 def MVN_log_likelihood(X, model):
@@ -309,12 +310,11 @@ def ICA_log_likelihood(X, model):
     :param model: An ICA_Model object.
     :return: The log likelihood of all the patches combined.
     """
-
     d = X.shape[0]
     rows_likelihoods = np.zeros(d)
     for i in range(d):
-        row = X[i, :][:, None]
-        rows_likelihoods[i](GSM_log_likelihood(row, model))
+        row = X[i, :]
+        rows_likelihoods[i] = GSM_log_likelihood(row, GSM_Model(model.vars[i,:], model.mix[i,:]))
     return np.sum(rows_likelihoods)
 
 
@@ -412,13 +412,18 @@ def EM(X, k, likelihood_func=GSM_log_likelihood, scale=False):
 
         model = GSM_Model(cov_vec, pi)
         likelihood_results.append(likelihood_func(X, model))
-        print('likelihood_results:', likelihood_results[-1])
+        # print('likelihood_results:', likelihood_results[-1])
         if len(likelihood_results) >= 2 and \
                 likelihood_results[-1] - likelihood_results[-2] < EM_STOP_EPSILION:
             return cov_vec, pi, likelihood_results
-    print("stopped after", j, "iterations")
+    # print("stopped after", j, "iterations")
     return cov_vec, pi, likelihood_results
 
+def plot_log_likelihood(likelihood_arr, model_name):
+    # fig = plt.figure()
+    plt.plot(range(len(likelihood_arr)), likelihood_arr)
+    plt.title(model_name + " log likelihood")
+    plt.show()
 
 def learn_GSM(X, k):
     """
@@ -434,6 +439,7 @@ def learn_GSM(X, k):
 
     cov_vec, pi, likelihood_results = EM(X, k, GSM_log_likelihood, scale=True)
 
+    plot_log_likelihood(likelihood_results, "GSM")
     return GSM_Model(cov_vec, pi)
 
 
@@ -458,10 +464,15 @@ def learn_ICA(X, k):
     # base_model = ICA_Model(P, np.zeros, pi)
     vars = np.ones((d,k)) * -1
     # For each of the GMM's we learn we save a mix
-    mix = np.ones((k,d))
+    mix = np.ones((d,k))
+    likelihood = np.empty((d,EM_MAX_ITERATIONS))
     for i in range(d):
-        print("learning coordinate:", i)
-        vars[i, :], mix[:, i], likelihood = EM(s[i, :], k)
+        # print("learning coordinate:", i)
+        vars[i, :], mix[i, :], likelihood_temp = EM(s[i, :], k)
+        likelihood[i, :] = np.array(likelihood_temp + [likelihood_temp[-1]] * (EM_MAX_ITERATIONS -
+                                                                            len(likelihood_temp)))
+    sum_likelihood = np.sum(likelihood, axis=0)
+    plot_log_likelihood(sum_likelihood, "ICA")
     return ICA_Model(P, vars, mix)
 
 
@@ -550,19 +561,28 @@ def ICA_Denoise(Y, ica_model, noise_std):
     s_denoise = np.zeros(s_noise.shape)
     for i in range(d):
         s_denoise[i, :] = GSM_Denoise(s_noise[i, :][:, None].T, GSM_Model(ica_model.cov[i,:],
-                                                         ica_model.mix[:, i]), noise_std)
+                                                         ica_model.mix[i, :]), noise_std)
     return np.matlib.matmul(ica_model.P, s_denoise)
 
 
-def learn(learn_func, path='train_images.pickle', k=None, patch_size=(8, 8)):
+def learn(learn_func, model_name, likelihood_func, path='train_images.pickle', k=None, \
+                                                                                patch_size=(8, 8)):
     with open(path, 'rb') as f:
         train_pictures = pickle.load(f)
 
     patches = sample_patches(train_pictures, psize=patch_size, n=20000)
 
+    start = time.time()
     if k:
-        return learn_func(patches, k)
-    return learn_func(patches)
+        model = learn_func(patches, k)
+    else:
+        model = learn_func(patches)
+    end = time.time()
+    likelihood_score = likelihood_func(patches, model)
+    print("model %s\ntraining time (seconds):%.3g\nlikelihood_score:%.4g" % (model_name,
+                                                                             (end - start),
+                                                                             likelihood_score))
+    return model
 
 
 if __name__ == '__main__':
@@ -570,33 +590,33 @@ if __name__ == '__main__':
     with open('test_images.pickle', 'rb') as f:
         test_pictures = pickle.load(f)
     test_pictures = grayscale_and_standardize(test_pictures)
-    # model = learn(learn_MVN)
-    # denoise = MVN_Denoise
-    model = learn(learn_ICA, k=3)
 
-    if not os.path.exists("GSM_model.pickle"):
-        model = learn(learn_GSM, k=3)
-        with open("GSM_model.pickle", "wb") as f:
-            pickle.dump(model, f)
-    else:
-        with open("GSM_model.pickle", "rb") as f:
-            model = pickle.load(f)
-    denoise = GSM_Denoise
-    pic = np.random.choice(test_pictures)
-    test_denoising(pic, model, denoise, noise_range=([0.1]))
+    ICA_model = learn(learn_ICA, "ICA", ICA_log_likelihood, k=3)
+    GSM_model = learn(learn_GSM, "GSM", GSM_log_likelihood, k=3)
+    mvn_model = learn(learn_MVN, "MVN", MVN_log_likelihood)
 
+    # if not os.path.exists("GSM_model.pickle"):
+    #     model = learn(learn_GSM, k=3)
+    #     with open("GSM_model.pickle", "wb") as f:
+    #         pickle.dump(model, f)
+    # else:
+    #     with open("GSM_model.pickle", "rb") as f:
+    #         model = pickle.load(f)
+    # denoise = GSM_Denoise
+    # pic = np.random.choice(test_pictures)
+    # test_denoising(pic, model, denoise, noise_range=([0.1]))
 
-
-    if not os.path.exists("ICA_model.pickle"):
-        model = learn(learn_ICA, k=3)
-        with open("ICA_model.pickle", "wb") as f:
-            pickle.dump(model, f)
-    else:
-        with open("ICA_model.pickle", "rb") as f:
-            model = pickle.load(f)
-    denoise = ICA_Denoise
-    pic = np.random.choice(test_pictures)
-    test_denoising(pic, model, denoise, noise_range=([0.1]))
+    # model = learn(learn_ICA, k=3)
+    # if not os.path.exists("ICA_model.pickle"):
+    #     model = learn(learn_ICA, k=3)
+    #     with open("ICA_model.pickle", "wb") as f:
+    #         pickle.dump(model, f)
+    # else:
+    #     with open("ICA_model.pickle", "rb") as f:
+    #         model = pickle.load(f)
+    # denoise = ICA_Denoise
+    # pic = np.random.choice(test_pictures)
+    # test_denoising(pic, model, denoise, noise_range=([0.1]))
     # pics = grayscale_and_standardize(test_pictures)
     # for pic in pics:
     #     test_denoising(pic, model, denoise)
