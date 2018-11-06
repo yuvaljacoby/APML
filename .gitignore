@@ -112,5 +112,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-bishop *.pdf
-
+*.pdf
+*.pickle?
+vcs.xml
