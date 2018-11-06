@@ -357,68 +357,7 @@ def posterior_prob(patchs, pi, mean, cov_vec):
     return c
 
 
-def learn_GSM(X, k):
-    """
-    Learn parameters for a Gaussian Scaling Mixture model for X using EM.
-
-    GSM components share the variance, up to a scaling factor, so we only
-    need to learn scaling factors and mixture proportions.
-
-    :param X: a DxM data matrix, where D is the dimension, and M is the number of samples.
-    :param k: The number of components of the GSM model.
-    :return: A trained GSM_Model object.
-    """
-
-    # the probability x_i came from gaussian y, we start with uniform
-    pi = np.array([1 / k] * k)
-
-    # start with random scalars
-    # TODO: maybe better to do diffrenet initialization
-    r_y = np.array(np.random.rand(k)) # * 10 # np.array(np.random.normal(size=k))
-    d = X.shape[0]
-    mean = np.zeros(d)
-
-    cov = np.cov(X)
-
-    # It's a k length vector, where each cell is the scaled cov matrix
-    cov_vec = np.array([r_y[i] * cov for i in range(k)])
-    assert(cov_vec[0, :, :].shape == cov.shape)
-    # cov_vec, pi, likelihood_results = EM(X, k, pi, GSM_log_likelihood, scale=True)
-    likelihood_results = []
-
-    numeator_mul = np.diag(X.T.dot(np.linalg.pinv(cov)).dot(X))
-    r_y = np.zeros(k)
-    for j in range(1, EM_MAX_ITERATIONS):
-        print("iteration:", j)
-        # E step - update patch probabilty for each gaussian
-        c = posterior_prob(X, pi, mean, cov_vec)
-
-        # M step - update pi
-        pi = np.sum(c, axis=0) / X.shape[1]
-        # test the probabilities are still valid
-        assert (np.abs(sum(pi) - 1) < 0.05)
-        assert ((np.abs(np.sum(c, axis=1) - 1) < 0.05).all())
-
-        for i in range(k):
-            numerator = np.sum(c[:, i] * numeator_mul)
-            r_y[i] = numerator / (d * np.sum(c[:, i]))
-
-        # Update the cov matrix
-        # TODO: Can remove the loop?
-        cov_vec = np.array([r_y[i] * cov for i in range(k)])
-
-        likelihood_results.append(GSM_log_likelihood(X, GSM_Model(cov_vec, pi)))
-        print('likelihood_results:', likelihood_results[-1])
-
-        if len(likelihood_results) >= 2 and \
-                likelihood_results[-1] - likelihood_results[-2] < EM_STOP_EPSILION:
-            return GSM_Model(cov_vec, pi)
-    print("likelihood:", likelihood_results)
-    return GSM_Model(cov_vec, pi)
-
-
-def EM(X, k, mix, likelihood_func, scale=False):
-
+def EM(X, k, likelihood_func=GSM_log_likelihood, scale=False):
     d = X.shape[0]
     mean = np.zeros(d)
     if len(X.shape) >= 2:
@@ -426,9 +365,8 @@ def EM(X, k, mix, likelihood_func, scale=False):
     else:
         N = len(X)
     cov = np.cov(X)
-    pi = mix
-    # It's a k length vector, where each cell is the scaled cov matrix
-
+    # the probability x_i came from gaussian y, we start with uniform
+    pi = np.array([1 / k] * k)
     likelihood_results = []
 
     if scale:
@@ -437,14 +375,16 @@ def EM(X, k, mix, likelihood_func, scale=False):
         # * 10 # np.array(np.random.normal(size=k))
         r_y = np.array(np.random.rand(k))
         numeator_mul = np.diag(X.T.dot(np.linalg.pinv(cov)).dot(X))
+        cov_vec = np.array([r_y[i] * cov for i in range(k)])
     else:
-        r_y = np.array(np.random.rand(k))
+        r_y = np.ones(k)
+        cov_noise = np.abs(np.random.normal(0,1,k))
         # It's a 1d vector, and we seek for it's square...
         x_square = np.square(X)
+        cov_vec = np.array([cov] * 3 + cov_noise)
 
-    cov_vec = np.array([r_y[i] * cov for i in range(k)])
+
     for j in range(1, EM_MAX_ITERATIONS):
-        print("iteration:", j, "\npi:", pi, "cov:", cov_vec)
         # E step - update patch probabilty for each gaussian
         c = posterior_prob(X, pi, mean, cov_vec)
 
@@ -471,12 +411,30 @@ def EM(X, k, mix, likelihood_func, scale=False):
 
 
         model = GSM_Model(cov_vec, pi)
-        likelihood_results.append(GSM_log_likelihood(X, model))
+        likelihood_results.append(likelihood_func(X, model))
         print('likelihood_results:', likelihood_results[-1])
         if len(likelihood_results) >= 2 and \
                 likelihood_results[-1] - likelihood_results[-2] < EM_STOP_EPSILION:
             return cov_vec, pi, likelihood_results
+    print("stopped after", j, "iterations")
     return cov_vec, pi, likelihood_results
+
+
+def learn_GSM(X, k):
+    """
+    Learn parameters for a Gaussian Scaling Mixture model for X using EM.
+
+    GSM components share the variance, up to a scaling factor, so we only
+    need to learn scaling factors and mixture proportions.
+
+    :param X: a DxM data matrix, where D is the dimension, and M is the number of samples.
+    :param k: The number of components of the GSM model.
+    :return: A trained GSM_Model object.
+    """
+
+    cov_vec, pi, likelihood_results = EM(X, k, GSM_log_likelihood, scale=True)
+
+    return GSM_Model(cov_vec, pi)
 
 
 def learn_ICA(X, k):
@@ -497,14 +455,13 @@ def learn_ICA(X, k):
     _, P = np.linalg.eig(cov)
 
     s = np.matlib.matmul(P.T, X)
-    pi = np.array([1 / k] * k)
     # base_model = ICA_Model(P, np.zeros, pi)
     vars = np.ones((d,k)) * -1
     # For each of the GMM's we learn we save a mix
     mix = np.ones((k,d))
     for i in range(d):
         print("learning coordinate:", i)
-        vars[i, :], mix[:, i], likelihood = EM(s[i, :], k, pi, ICA_log_likelihood)
+        vars[i, :], mix[:, i], likelihood = EM(s[i, :], k)
     return ICA_Model(P, vars, mix)
 
 
@@ -615,7 +572,7 @@ if __name__ == '__main__':
     test_pictures = grayscale_and_standardize(test_pictures)
     # model = learn(learn_MVN)
     # denoise = MVN_Denoise
-
+    model = learn(learn_ICA, k=3)
 
     if not os.path.exists("GSM_model.pickle"):
         model = learn(learn_GSM, k=3)
@@ -627,6 +584,7 @@ if __name__ == '__main__':
     denoise = GSM_Denoise
     pic = np.random.choice(test_pictures)
     test_denoising(pic, model, denoise, noise_range=([0.1]))
+
 
 
     if not os.path.exists("ICA_model.pickle"):
