@@ -1,5 +1,6 @@
-import pickle
 import os
+import pickle
+import time
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,10 +8,11 @@ import numpy.matlib
 from scipy.misc import logsumexp
 from scipy.stats import multivariate_normal
 from skimage.util import view_as_windows as viewW
-import time
 
-EM_MAX_ITERATIONS = 20
-EM_STOP_EPSILION = 0.01
+EM_MAX_ITERATIONS = 200
+EM_STOP_EPSILION = 0.001
+SAVE_DIR = "figs"
+
 
 def images_example(path='train_images.pickle'):
     """
@@ -33,7 +35,7 @@ def images_example(path='train_images.pickle'):
         plt.subplot(2, 2, i + 1)
         plt.imshow(patches[:, i].reshape(patch_size), cmap='gray')
         plt.title("Patch Example")
-    plt.show()
+    plt.show(block=False)
 
 
 def im2col(A, window, stepsize=1):
@@ -172,7 +174,7 @@ def normalize_log_likelihoods(X):
 
 
 def test_denoising(image, model, denoise_function,
-                   noise_range=(0.01, 0.05, 0.1, 0.2), patch_size=(8, 8)):
+                   noise_range=(0.01, 0.05, 0.1, 0.2), patch_size=(8, 8), save_path=None):
     """
     A simple function for testing your denoising code. You can and should
     implement additional tests for your code.
@@ -213,7 +215,9 @@ def test_denoising(image, model, denoise_function,
         plt.imshow(noisy_images[:, :, i], cmap='gray')
         plt.subplot(2, len(noise_range), i + 1 + len(noise_range))
         plt.imshow(denoised_images[i], cmap='gray')
-    plt.show()
+    if save_path:
+        plt.savefig(save_path)
+    plt.show(block=False)
 
 
 class MVN_Model:
@@ -244,7 +248,6 @@ class GSM_Model:
     def __init__(self, cov, mix):
         self.cov = cov
         self.mix = mix
-        # self.mean = np.array([0] * cov.shape[1])
 
 
 class ICA_Model:
@@ -261,10 +264,8 @@ class ICA_Model:
 
     def __init__(self, P, vars, mix):
         self.P = P
-        # Save it as cov so will be like GSM
         self.vars = vars
         self.mix = mix
-        # self.mean = np.array([0] * vars.shape[1])
 
 
 def MVN_log_likelihood(X, model):
@@ -310,11 +311,14 @@ def ICA_log_likelihood(X, model):
     :param model: An ICA_Model object.
     :return: The log likelihood of all the patches combined.
     """
-    d = X.shape[0]
+
+    s = np.matlib.matmul(model.P.T, X)
+    d = s.shape[0]
+
     rows_likelihoods = np.zeros(d)
     for i in range(d):
-        row = X[i, :]
-        rows_likelihoods[i] = GSM_log_likelihood(row, GSM_Model(model.vars[i,:], model.mix[i,:]))
+        row = s[i, :]
+        rows_likelihoods[i] = GSM_log_likelihood(row, GSM_Model(model.vars[i, :], model.mix[i, :]))
     return np.sum(rows_likelihoods)
 
 
@@ -330,7 +334,7 @@ def learn_MVN(X):
     return model
 
 
-def posterior_prob(patchs, pi, mean, cov_vec):
+def posterior_prob(patchs, pi, cov_vec):
     '''
     :param patchs:
     :param pi: k length vector, each cell i contains the probability of a patch to be drawn from
@@ -348,7 +352,7 @@ def posterior_prob(patchs, pi, mean, cov_vec):
     c = np.ones((N, len(cov_vec)))
     for kk in range(k):
         # calculate c: calculate numerator and denominator separately in logspace,
-        # and then divide and revert to original space
+        # and then divide and go back to original space
         logpdf = multivariate_normal.logpdf(patchs.T, cov=cov_vec[kk], allow_singular=True)
         c[:, kk] = np.log(pi[kk]) + logpdf
 
@@ -371,22 +375,19 @@ def EM(X, k, likelihood_func=GSM_log_likelihood, scale=False):
 
     if scale:
         # start with random scalars
-        # TODO: maybe better to do diffrenet initialization
-        # * 10 # np.array(np.random.normal(size=k))
         r_y = np.array(np.random.rand(k))
         numeator_mul = np.diag(X.T.dot(np.linalg.pinv(cov)).dot(X))
         cov_vec = np.array([r_y[i] * cov for i in range(k)])
     else:
         r_y = np.ones(k)
-        cov_noise = np.abs(np.random.normal(0,1,k))
+        cov_noise = np.abs(np.random.normal(0, 1, k))
         # It's a 1d vector, and we seek for it's square...
         x_square = np.square(X)
-        cov_vec = np.array([cov] * 3 + cov_noise)
-
+        cov_vec = np.array([cov] * k + cov_noise)
 
     for j in range(1, EM_MAX_ITERATIONS):
         # E step - update patch probabilty for each gaussian
-        c = posterior_prob(X, pi, mean, cov_vec)
+        c = posterior_prob(X, pi, cov_vec)
 
         # M step - update pi
         pi = np.sum(c, axis=0) / N
@@ -403,27 +404,23 @@ def EM(X, k, likelihood_func=GSM_log_likelihood, scale=False):
             cov_vec = np.array([r_y[i] * cov for i in range(k)])
         else:
             norm_ci = np.sum(c, axis=0)
-            # for i in range(k):
-            # for i in range(k):
-            #     cov_vec[i] = (c[:, i] * X.T).dot(X) / np.sum(c[:, i])
             cov_vec = c.T.dot(x_square) / norm_ci
-            # assert((cov_vec == cov_vec2.all()))
-
 
         model = GSM_Model(cov_vec, pi)
         likelihood_results.append(likelihood_func(X, model))
-        # print('likelihood_results:', likelihood_results[-1])
         if len(likelihood_results) >= 2 and \
                 likelihood_results[-1] - likelihood_results[-2] < EM_STOP_EPSILION:
             return cov_vec, pi, likelihood_results
     # print("stopped after", j, "iterations")
     return cov_vec, pi, likelihood_results
 
-def plot_log_likelihood(likelihood_arr, model_name):
-    # fig = plt.figure()
+
+def plot_log_likelihood(likelihood_arr, model_name):  # fig = plt.figure()
     plt.plot(range(len(likelihood_arr)), likelihood_arr)
     plt.title(model_name + " log likelihood")
-    plt.show()
+    plt.savefig("models/loglikelihood_" + model_name)
+    # plt.show(block=False)
+
 
 def learn_GSM(X, k):
     """
@@ -439,7 +436,7 @@ def learn_GSM(X, k):
 
     cov_vec, pi, likelihood_results = EM(X, k, GSM_log_likelihood, scale=True)
 
-    plot_log_likelihood(likelihood_results, "GSM")
+    plot_log_likelihood(likelihood_results, "GSM k=" + str(k))
     return GSM_Model(cov_vec, pi)
 
 
@@ -461,18 +458,20 @@ def learn_ICA(X, k):
     _, P = np.linalg.eig(cov)
 
     s = np.matlib.matmul(P.T, X)
-    # base_model = ICA_Model(P, np.zeros, pi)
-    vars = np.ones((d,k)) * -1
+
+    vars = np.ones((d, k)) * -1
     # For each of the GMM's we learn we save a mix
-    mix = np.ones((d,k))
-    likelihood = np.empty((d,EM_MAX_ITERATIONS))
+    mix = np.ones((d, k))
+    likelihood = np.empty((d, EM_MAX_ITERATIONS))
     for i in range(d):
-        # print("learning coordinate:", i)
+        # ("learning coordinate:", i)
         vars[i, :], mix[i, :], likelihood_temp = EM(s[i, :], k)
-        likelihood[i, :] = np.array(likelihood_temp + [likelihood_temp[-1]] * (EM_MAX_ITERATIONS -
-                                                                            len(likelihood_temp)))
+        likelihood[i, :] = np.array(likelihood_temp + [likelihood_temp[-1]] *
+                                    (EM_MAX_ITERATIONS - len(likelihood_temp)))
     sum_likelihood = np.sum(likelihood, axis=0)
-    plot_log_likelihood(sum_likelihood, "ICA")
+    plot_log_likelihood(sum_likelihood, "SUM ICA k=" + str(k))
+    plot_log_likelihood(likelihood[np.random.randint(likelihood.shape[0])], "random ICA row "
+                                                                            "k=" + str(k))
     return ICA_Model(P, vars, mix)
 
 
@@ -480,13 +479,13 @@ def weiner(Y, mu, cov, noise_std):
     noise_var = np.square(noise_std)
     cov_inv = np.linalg.inv(cov)
     normalized_y = (Y / noise_var)
-    normalized_mean = cov_inv.dot(mu) #np.matmul(cov_inv, mu)
+    normalized_mean = cov_inv.dot(mu)
 
     first_mat = np.linalg.inv(cov_inv +
                               (np.eye(cov_inv.shape[0], cov_inv.shape[1]) / noise_var))
     second_mat = (normalized_mean + normalized_y.transpose()).transpose()
 
-    return first_mat.dot(second_mat) #np.matmul(first_mat, second_mat)
+    return first_mat.dot(second_mat)
 
 
 def MVN_Denoise(Y, mvn_model, noise_std):
@@ -521,9 +520,9 @@ def GSM_Denoise(Y, gsm_model, noise_std):
 
     k = len(gsm_model.cov)
     d = Y.shape[0]
-    M = Y.shape[1] #if len(Y.shape) > 1 else 1
+    M = Y.shape[1]
     mean = np.array([0] * d)
-    # mean = gsm_model.mean
+
     weniner_vec = np.zeros((k, d, M))
 
     if len(gsm_model.cov.shape) >= 2:
@@ -532,9 +531,7 @@ def GSM_Denoise(Y, gsm_model, noise_std):
     else:
         noise_matrix = noise_std
 
-    c = posterior_prob(Y, gsm_model.mix, mean, gsm_model.cov + noise_matrix)
-
-
+    c = posterior_prob(Y, gsm_model.mix, gsm_model.cov + noise_matrix)
 
     cov = gsm_model.cov if len(gsm_model.cov.shape) >= 2 else gsm_model.cov[:, None, None]
     for i in range(k):
@@ -560,15 +557,16 @@ def ICA_Denoise(Y, ica_model, noise_std):
     s_noise = np.matlib.matmul(ica_model.P.T, Y)
     s_denoise = np.zeros(s_noise.shape)
     for i in range(d):
-        s_denoise[i, :] = GSM_Denoise(s_noise[i, :][:, None].T, GSM_Model(ica_model.cov[i,:],
-                                                         ica_model.mix[i, :]), noise_std)
+        s_denoise[i, :] = GSM_Denoise(s_noise[i, :][:, None].T,
+                                      GSM_Model(ica_model.vars[i, :], ica_model.mix[i, :]),
+                                      noise_std)
     return np.matlib.matmul(ica_model.P, s_denoise)
 
 
 def learn(learn_func, model_name, likelihood_func, path='train_images.pickle', k=None, \
-                                                                                patch_size=(8, 8)):
-    with open(path, 'rb') as f:
-        train_pictures = pickle.load(f)
+          patch_size=(8, 8)):
+    with open(path, 'rb') as fl:
+        train_pictures = pickle.load(fl)
 
     patches = sample_patches(train_pictures, psize=patch_size, n=20000)
 
@@ -579,44 +577,54 @@ def learn(learn_func, model_name, likelihood_func, path='train_images.pickle', k
         model = learn_func(patches)
     end = time.time()
     likelihood_score = likelihood_func(patches, model)
-    print("model %s\ntraining time (seconds):%.3g\nlikelihood_score:%.4g" % (model_name,
-                                                                             (end - start),
-                                                                             likelihood_score))
+    print("model %s\n\ttraining time (seconds):%.3g\n\tlikelihood_score:%.4g" %
+          (model_name, (end - start), likelihood_score), flush=True)
     return model
 
 
 if __name__ == '__main__':
+    noise_range = [0.01, 0.1, 0.2, 0.6]
+    pictures_to_test = 1
+    try:
+        with open('test_images.pickle', 'rb') as f:
+            test_pictures = pickle.load(f)
+        test_pictures = grayscale_and_standardize(test_pictures)
+    except Exception as e:
+        print("couldn't open test_images.pickle")
+        print(e)
 
-    with open('test_images.pickle', 'rb') as f:
-        test_pictures = pickle.load(f)
-    test_pictures = grayscale_and_standardize(test_pictures)
+    if not os.path.exists(SAVE_DIR):
+        os.makedirs(SAVE_DIR)
 
-    ICA_model = learn(learn_ICA, "ICA", ICA_log_likelihood, k=3)
-    GSM_model = learn(learn_GSM, "GSM", GSM_log_likelihood, k=3)
-    mvn_model = learn(learn_MVN, "MVN", MVN_log_likelihood)
+    k = 3
+    i = 0
+    print("k =", k)
+    learnd_ica = learn(learn_ICA, "ICA", ICA_log_likelihood, k=k)
+    # with open(SAVE_DIR + "/ICA_model{}.pickle".format(k), "wb") as f:
+    #     pickle.dump(learnd_ica, f)
+    learnd_gsm = learn(learn_GSM, "GSM", GSM_log_likelihood, k=k)
+    # with open(SAVE_DIR + "/GSM_model{}.pickle".format(k), "wb") as f:
+    #     pickle.dump(learnd_gsm, f)
 
-    # if not os.path.exists("GSM_model.pickle"):
-    #     model = learn(learn_GSM, k=3)
-    #     with open("GSM_model.pickle", "wb") as f:
-    #         pickle.dump(model, f)
-    # else:
-    #     with open("GSM_model.pickle", "rb") as f:
-    #         model = pickle.load(f)
-    # denoise = GSM_Denoise
-    # pic = np.random.choice(test_pictures)
-    # test_denoising(pic, model, denoise, noise_range=([0.1]))
+    learnd_mvn = learn(learn_MVN, "MVN", MVN_log_likelihood)
 
-    # model = learn(learn_ICA, k=3)
-    # if not os.path.exists("ICA_model.pickle"):
-    #     model = learn(learn_ICA, k=3)
-    #     with open("ICA_model.pickle", "wb") as f:
-    #         pickle.dump(model, f)
-    # else:
-    #     with open("ICA_model.pickle", "rb") as f:
-    #         model = pickle.load(f)
-    # denoise = ICA_Denoise
-    # pic = np.random.choice(test_pictures)
-    # test_denoising(pic, model, denoise, noise_range=([0.1]))
-    # pics = grayscale_and_standardize(test_pictures)
-    # for pic in pics:
-    #     test_denoising(pic, model, denoise)
+    for pic in test_pictures[:pictures_to_test]:
+        print("denoise for k={} GSM_model, noise_range: {}, pic_num: {}".
+              format(k, noise_range, i), flush=True)
+        test_denoising(pic, learnd_gsm, GSM_Denoise, noise_range=(noise_range),
+                       save_path=SAVE_DIR + "/gsm_fig_" + "k=" + str(k) + "_" + str(i))
+
+        print("denoise for k={} ICA_model, noise_range: {}, pic_num: {}".
+              format(k, noise_range, i), flush=True)
+        test_denoising(pic, learnd_ica, ICA_Denoise, noise_range=(noise_range),
+                       save_path=SAVE_DIR + "/ica_fig_" + "k=" + str(k) + "_" + str(i))
+
+        print("denoise for mvn model,", "noise_range:", noise_range, "pic num:", i, )
+        test_denoising(pic, learnd_mvn, MVN_Denoise, noise_range=(noise_range),
+                       save_path=SAVE_DIR + "/mvn_fig_" + str(i))
+
+        print("\n", flush=True)
+        i += 1
+    print("\n", flush=True)
+
+    plt.show()
