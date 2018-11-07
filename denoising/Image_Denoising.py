@@ -415,10 +415,11 @@ def EM(X, k, likelihood_func=GSM_log_likelihood, scale=False):
     return cov_vec, pi, likelihood_results
 
 
-def plot_log_likelihood(likelihood_arr, model_name):  # fig = plt.figure()
+def plot_log_likelihood(likelihood_arr, model_name):
+    plt.figure()
     plt.plot(range(len(likelihood_arr)), likelihood_arr)
     plt.title(model_name + " log likelihood")
-    plt.savefig("models/loglikelihood_" + model_name)
+    plt.savefig(SAVE_DIR + "/loglikelihood_" + model_name)
     # plt.show(block=False)
 
 
@@ -600,28 +601,37 @@ if __name__ == '__main__':
     i = 0
     print("k =", k)
     learnd_ica = learn(learn_ICA, "ICA", ICA_log_likelihood, k=k)
-    # with open(SAVE_DIR + "/ICA_model{}.pickle".format(k), "wb") as f:
-    #     pickle.dump(learnd_ica, f)
+    with open(SAVE_DIR + "/ICA_model{}.pickle".format(k), "wb") as f:
+        pickle.dump(learnd_ica, f)
     learnd_gsm = learn(learn_GSM, "GSM", GSM_log_likelihood, k=k)
-    # with open(SAVE_DIR + "/GSM_model{}.pickle".format(k), "wb") as f:
-    #     pickle.dump(learnd_gsm, f)
+    with open(SAVE_DIR + "/GSM_model{}.pickle".format(k), "wb") as f:
+        pickle.dump(learnd_gsm, f)
 
     learnd_mvn = learn(learn_MVN, "MVN", MVN_log_likelihood)
 
     for pic in test_pictures[:pictures_to_test]:
         print("denoise for k={} GSM_model, noise_range: {}, pic_num: {}".
               format(k, noise_range, i), flush=True)
+        start = time.time()
         test_denoising(pic, learnd_gsm, GSM_Denoise, noise_range=(noise_range),
                        save_path=SAVE_DIR + "/gsm_fig_" + "k=" + str(k) + "_" + str(i))
+        end = time.time()
+        print("time(sec): {}".format(end - start), flush=True)
 
-        print("denoise for k={} ICA_model, noise_range: {}, pic_num: {}".
+        print("\ndenoise for k={} ICA_model, noise_range: {}, pic_num: {}".
               format(k, noise_range, i), flush=True)
+        start = time.time()
         test_denoising(pic, learnd_ica, ICA_Denoise, noise_range=(noise_range),
                        save_path=SAVE_DIR + "/ica_fig_" + "k=" + str(k) + "_" + str(i))
+        end = time.time()
+        print("time(sec): {}".format(k, noise_range, i, end - start), flush=True)
 
-        print("denoise for mvn model,", "noise_range:", noise_range, "pic num:", i, )
+        print("\ndenoise for mvn model,", "noise_range:", noise_range, "pic num:", i)
+        start = time.time()
         test_denoising(pic, learnd_mvn, MVN_Denoise, noise_range=(noise_range),
                        save_path=SAVE_DIR + "/mvn_fig_" + str(i))
+        end = time.time()
+        print("time(sec):", end - start)
 
         print("\n", flush=True)
         i += 1
