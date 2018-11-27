@@ -114,4 +114,5 @@ dmypy.json
 .pyre/
 *.pdf
 *.pickle?
+*.pickle
 vcs.xml

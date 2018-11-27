@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/Image_Denoising.py" line="643" />
-  </component>
   <component name="ChangeListManager">
     <list default="true" id="6c602b9c-4cb4-4377-813a-3b12e601d30f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GSM_model.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/GSM_model.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Image_Denoising.py" beforeDir="false" afterPath="$PROJECT_DIR$/Image_Denoising.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,35 +14,36 @@
     <session id="-2008296523">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.open.time.5" value="1" />
           <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.7" value="1" />
-          <entry key="project.opened" value="5" />
+          <entry key="project.opened" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="1" />
-          <entry key="py" value="16333" />
+          <entry key="py" value="24427" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="1" />
-          <entry key="Python" value="16333" />
+          <entry key="Python" value="24427" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="38" />
+          <entry key="py" value="64" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="38" />
+          <entry key="Python" value="64" />
         </counts>
       </usages-collector>
     </session>
@@ -55,40 +51,22 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Image_Denoising.py">
+        <entry file="file://$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="257">
-              <caret line="387" lean-forward="true" selection-start-line="387" selection-end-line="387" />
+            <state relative-caret-position="396">
+              <caret line="130" column="35" selection-start-line="130" selection-start-column="35" selection-end-line="130" selection-end-column="35" />
               <folding>
-                <element signature="e#9460#9612#0" />
-                <element signature="e#9653#10098#0" />
-                <element signature="e#11194#11504#0" />
-                <element signature="e#16629#17085#1" />
+                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/keren/keren.py">
+        <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/requests/sessions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="61">
-              <caret line="504" column="25" lean-forward="true" selection-start-line="504" selection-start-column="25" selection-end-line="504" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
-              <caret line="13" selection-start-line="13" selection-end-line="13" />
-              <folding>
-                <marker date="1540910205174" expanded="true" signature="493:711" ph="..." />
-              </folding>
+            <state relative-caret-position="126">
+              <caret line="621" selection-start-line="621" selection-end-line="621" />
             </state>
           </provider>
         </entry>
@@ -104,37 +82,40 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>posterior_prob</find>
-      <find>likelihood</find>
-      <find>print(k</find>
-      <find>GSM_de</find>
-      <find>[:, None</find>
-      <find>ICA_den</find>
-      <find>GSM_Denoise</find>
-      <find>logpdf.sh</find>
-      <find>posterior</find>
+      <find>multip</find>
+      <find>denoise</find>
       <find>ICA_denoise</find>
-      <find>ICA_</find>
-      <find>ICA_lo</find>
-      <find>ICA_log</find>
-      <find>ICA_log_likelihood</find>
-      <find>EM</find>
-      <find>Exp</find>
-      <find>Expec</find>
-      <find>GSM_log_likelihood</find>
-      <find>logpdf.sha</find>
-      <find>likelihood_res</find>
-      <find>x_s</find>
-      <find>learn_ICA</find>
-      <find>mix:</find>
-      <find>logpdf.s</find>
-      <find>iteration:</find>
-      <find>GSM_</find>
-      <find>EM(</find>
-      <find>mix</find>
+      <find>flush</find>
+      <find>ICA_log_li</find>
+      <find>MVN</find>
+      <find>noise_</find>
+      <find>plot</find>
+      <find>sum</find>
+      <find>random</find>
+      <find>plot_log_likelihood</find>
+      <find>posterior_prob</find>
+      <find>`</find>
+      <find>&quot;models/</find>
+      <find>time.time</find>
+      <find>models/</find>
+      <find>models</find>
+      <find>plot_log</find>
+      <find>head</find>
+      <find>haders</find>
+      <find>https</find>
+      <find>robot-kit-a-whole-new-</find>
       <find>print</find>
-      <find>learn_GSM</find>
+      <find>json.</find>
+      <find>BeautifulSoup</find>
+      <find>scrap_pages</find>
+      <find>get_pages</find>
+      <find>scrap_one_page</find>
+      <find>HTML_CACHE_PATH</find>
+      <find>extract_urls_from_content</find>
     </findStrings>
+    <replaceStrings>
+      <replace>SAVE_DIR + &quot;/</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -147,6 +128,8 @@
         <option value="$USER_HOME$/PycharmProjects/Yad2Scraping/scrap.py" />
         <option value="$PROJECT_DIR$/keren/keren.py" />
         <option value="$PROJECT_DIR$/Image_Denoising.py" />
+        <option value="$USER_HOME$/Downloads/yad2Html (1).py" />
+        <option value="$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py" />
       </list>
     </option>
   </component>
@@ -178,24 +161,11 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="denoising" type="b2602c69:ProjectViewProjectNode" />
-              <item name="denoising" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///home/yuval/.local/lib/python3.5/site-packages/numpy/lib/twodim_base.py" />
-    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/Yad2Scraping/scrap.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunDashboard">
@@ -210,7 +180,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Image_Denoising">
+  <component name="RunManager" selected="Python.scrap (1)">
     <configuration name="Image_Denoising" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="denoising" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -232,7 +202,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="keren" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="decoder" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="denoising" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -240,11 +210,32 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/keren" />
+      <option name="WORKING_DIRECTORY" value="/usr/lib/python3.5/json" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/keren/keren.py" />
+      <option name="SCRIPT_NAME" value="/usr/lib/python3.5/json/decoder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scrap (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="denoising" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -274,7 +265,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="tests" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="yad2Html (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="denoising" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -282,11 +273,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Downloads" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Downloads/yad2Html (1).py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -296,17 +287,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.tests" />
       <item itemvalue="Python.Image_Denoising" />
-      <item itemvalue="Python.keren" />
       <item itemvalue="Python.scrap" />
+      <item itemvalue="Python.scrap (1)" />
+      <item itemvalue="Python.yad2Html (1)" />
+      <item itemvalue="Python.decoder" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.scrap (1)" />
+        <item itemvalue="Python.yad2Html (1)" />
+        <item itemvalue="Python.decoder" />
         <item itemvalue="Python.Image_Denoising" />
         <item itemvalue="Python.scrap" />
-        <item itemvalue="Python.keren" />
-        <item itemvalue="Python.tests" />
       </list>
     </recent_temporary>
   </component>
@@ -325,15 +318,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-11" width="1303" height="780" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.1627543" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24960877" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.52973396" side_tool="true" visible="true" weight="0.3431677" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.47026604" weight="0.3773292" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.5406886" side_tool="true" weight="0.21428572" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.45931143" weight="0.5667702" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -387,99 +379,142 @@
           <option name="timeStamp" value="98" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
-          <line>626</line>
-          <option name="timeStamp" value="117" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/keren/keren.py</url>
           <line>483</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
-          <line>478</line>
-          <option name="timeStamp" value="135" />
+          <line>439</line>
+          <option name="timeStamp" value="166" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
-          <line>312</line>
-          <option name="timeStamp" value="150" />
+          <url>file://$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py</url>
+          <line>130</line>
+          <option name="timeStamp" value="208" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Image_Denoising.py</url>
-          <line>475</line>
-          <option name="timeStamp" value="155" />
+          <url>file://$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py</url>
+          <line>84</line>
+          <option name="timeStamp" value="217" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py</url>
+          <line>95</line>
+          <option name="timeStamp" value="218" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py</url>
+          <line>78</line>
+          <option name="timeStamp" value="223" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="cov_vec" language="Python" />
-        <watch expression="model.cov" language="Python" />
-        <watch expression="c" language="Python" />
-        <watch expression="pi" language="Python" />
-        <watch expression="model.mix[i], model.cov[i]" language="Python" />
-        <watch expression="(c[i, :] * (x_squaure)).shape" language="Python" />
-        <watch expression="x_squaure.shape" language="Python" />
-        <watch expression="c[:, i].T.dot(x_squaure)" language="Python" />
+        <watch expression="url" language="Python" />
+        <watch expression="content" language="Python" />
+        <watch expression="data[-1]['NumBackers']" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="watch">
       <expression>
-        <expression-string>model.cov</expression-string>
+        <expression-string>data[-1]['NumBackers']</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>mode.cov</expression-string>
+        <expression-string>url</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>c[:, i].T.dot(x_squaure)</expression-string>
+        <expression-string>pprint(cur_data)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>c[:, i].dot(x_squaure)</expression-string>
+        <expression-string>len(urls)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>c[:, i].shape</expression-string>
+        <expression-string>content</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>c.shape</expression-string>
+        <expression-string>html.decode('utf-8', errors=&quot;ignore&quot;)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>x_squaure.shape</expression-string>
+        <expression-string>html.decode('utf-8')</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>x_squaure</expression-string>
+        <expression-string>html</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(c[i, :] * (x_squaure)).shape</expression-string>
+        <expression-string>data_inital['project']['name']</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(c[:, i].T * (x_squaure)).shape</expression-string>
+        <expression-string>data_inital['project']['creator']['name']</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
     <expressions id="setValue">
+      <expression>
+        <expression-string>'https://www.kickstarter.com/projects/jitomate/jitomate-increase-your-productivity'</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>16</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>342441.0</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>0.12773497</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>1545426000</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>&lt;class 'list'&gt;: ['\n', &lt;div class=&quot;grid-row&quot;&gt;
+&lt;div class=&quot;col-full flex justify-center&quot;&gt;
+&lt;div class=&quot;inline-block&quot;&gt;
+&lt;div class=&quot;display-none&quot;&gt;
+&lt;span class=&quot;inline-block relative dark-grey-500 type-18 shadow-2 border border-transparent pointer py2 pl3 pr2 mr2 mb2 text-nowrap js-ksr-select js-filter js-filter-state&quot;&gt;
+&lt;span class=&quot;js-title&quot;&gt;all&lt;/span&gt;
+&lt;select class=&quot;appearance-none o-none absolute t0 l0 h100p bg-white m0 p0 pointer border-none w100p&quot; name=&quot;state&quot;&gt;
+&lt;option data-alt-label=&quot;all&quot; selected=&quot;selected&quot; value=&quot;all&quot;&gt;All&lt;/option&gt;
+&lt;option data-alt-label=&quot;live&quot; value=&quot;live&quot;&gt;Live&lt;/option&gt;
+&lt;option data-alt-label=&quot;successful&quot; value=&quot;successful&quot;&gt;Successful&lt;/option&gt;
+&lt;/select&gt;
+&lt;svg aria-hidden=&quot;true&quot; class=&quot;svg-icon__icon--cross icon-small relative ml2 js-filter-delete&quot; role=&quot;button&quot; tabindex=&quot;0&quot;&gt;&lt;use xlink:href=&quot;#icon--cross&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+&lt;/span&gt;
+&lt;span class=&quot;inline-block relative dark-grey-500 type-18 shadow-2 border border-transparent pointer py2 pl3 pr2 mr2 mb2 text-nowrap js-ksr-selec...</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>None</expression-string>
         <language-id>Python</language-id>
@@ -518,79 +553,6 @@
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>[[[0.04790833 0.04726813 0.04627418 ... 0.04154809 0.0413564  0.04094503]
-  [0.04726813 0.04801955 0.04742679 ... 0.04195047 0.04178151 0.04140402]
-  [0.04627418 0.04742679 0.04820625 ... 0.04224665 0.0421044  0.04177141]
-  ...
-  [0.04154809 0.04195047 0.04224665 ... 0.04809224 0.04752207 0.04638853]
-  [0.0413564  0.04178151 0.0421044  ... 0.04752207 0.04825868 0.04749939]
-  [0.04094503 0.04140402 0.04177141 ... 0.04638853 0.04749939 0.04819281]]
-
- [[0.02395417 0.02363406 0.02313709 ... 0.02077405 0.0206782  0.02047251]
-  [0.02363406 0.02400978 0.02371339 ... 0.02097524 0.02089075 0.02070201]
-  [0.02313709 0.02371339 0.02410313 ... 0.02112332 0.0210522  0.0208857 ]
-  ...
-  [0.02077405 0.02097524 0.02112332 ... 0.02404612 0.02376104 0.02319426]
-  [0.0206782  0.02089075 0.0210522  ... 0.02376104 0.02412934 0.0237497 ]
-  [0.02047251 0.02070201 0.0208857  ... 0.02319426 0.0237497  0.02409641]]
-
- [[0.01596944 0.01575604 0.01542473 ... 0.01384936 0.01378547 0.01364834]
-  [0.01575604...</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>[[ 0.09865572  0.15138513  0.06934591 ...  0.1764165  -0.36599526
-   0.25849101]
- [ 0.14066356  0.15138513  0.06934591 ...  0.17249493 -0.36486585
-   0.25849101]
- [ 0.15242826  0.1553067   0.06542434 ...  0.17249493 -0.36486585
-   0.25708317]
- ...
- [-0.21471291  0.19452238  0.07561258 ...  0.1764165  -0.3858384
-   0.2184165 ]
- [ 0.01868317  0.19452238  0.07169101 ...  0.17249493 -0.38975997
-   0.21651846]
- [ 0.04613415  0.19452238  0.06776944 ...  0.17249493 -0.38830899
-   0.20330277]]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>[[-0.33449266 -0.34044302 -0.35345254 ...  0.01168601  0.0533967
-   0.09597427]
- [-0.34044302 -0.35345254 -0.34929826 ...  0.0533967   0.09597427
-   0.05097319]
- [-0.35345254 -0.34929826 -0.35378123 ...  0.09597427  0.05097319
-   0.04778996]
- ...
- [-0.24899754 -0.2418434  -0.24319924 ...  0.05875085  0.06266503
-   0.07361675]
- [-0.2418434  -0.24319924 -0.21400612 ...  0.06266503  0.07361675
-   0.06145017]
- [-0.24319924 -0.21400612 -0.19655328 ...  0.07361675  0.06145017
-   0.03505356]]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>&lt;class 'list'&gt;: [array([[0.18586835, 0.12312325, 0.12704482, ..., 0.13007227, 0.12587227,
-        0.19556639],
-       [0.11920169, 0.05645659, 0.06037816, ..., 0.06732718, 0.06822129,
-        0.13763698],
-       [0.11920169, 0.05253502, 0.0516409 , ..., 0.05858992, 0.05948404,
-        0.13399384],
-       ...,
-       [0.12760169, 0.06485659, 0.06396247, ..., 0.06643306, 0.06643306,
-        0.14207227],
-       [0.12615071, 0.05858992, 0.06251149, ..., 0.06643306, 0.07148404,
-        0.13815071],
-       [0.18861737, 0.12728012, 0.13120169, ..., 0.13815071, 0.13815071,
-        0.20481737]])]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
@@ -598,13 +560,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="141">
           <caret line="108" selection-start-line="108" selection-end-line="108" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python3.5/dist-packages/matplotlib/pyplot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1">
-          <caret line="575" selection-start-line="575" selection-end-line="575" />
         </state>
       </provider>
     </entry>
@@ -650,23 +605,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="17" selection-start-line="17" selection-end-line="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/PycharmProjects/Yad2Scraping/scrap.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="47" column="19" lean-forward="true" selection-start-line="47" selection-start-column="19" selection-end-line="47" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/numpy/lib/function_base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="19">
@@ -678,23 +616,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="92">
           <caret line="185" selection-start-line="140" selection-end-line="194" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
-          <folding>
-            <marker date="1540910205174" expanded="true" signature="493:711" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python3.5/dist-packages/scipy/stats/_multivariate.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="487" selection-start-line="487" selection-end-line="487" />
         </state>
       </provider>
     </entry>
@@ -712,25 +633,162 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/scipy/stats/_multivariate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="3771" lean-forward="true" selection-start-line="3771" selection-end-line="3771" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/yad2Html.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="23" column="66" selection-start-line="23" selection-start-column="66" selection-end-line="23" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/matplotlib/pyplot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="1018" column="13" selection-start-line="1018" selection-start-column="13" selection-end-line="1018" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/keren/keren.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="61">
-          <caret line="504" column="25" lean-forward="true" selection-start-line="504" selection-start-column="25" selection-end-line="504" selection-end-column="25" />
+        <state relative-caret-position="-110">
+          <caret line="548" column="7" selection-start-line="548" selection-start-column="4" selection-end-line="548" selection-end-column="7" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/matplotlib/cbook/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6734">
+          <caret line="396" column="9" lean-forward="true" selection-start-line="396" selection-start-column="9" selection-end-line="396" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.cache/.fr-7R11yN/Image Denoising.py" />
+    <entry file="file://$USER_HOME$/.cache/.fr-Yogfih/Image Denoising.py" />
+    <entry file="file://$PROJECT_DIR$/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="98">
+          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
+          <folding>
+            <marker date="1540910205174" expanded="true" signature="493:711" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydevd_bundle/pydevd_trace_dispatch_regular.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="109" selection-start-line="109" selection-end-line="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.5/json/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="317" column="14" lean-forward="true" selection-start-line="317" selection-start-column="14" selection-end-line="317" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.5/smtplib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3712">
+          <caret line="642" column="17" lean-forward="true" selection-start-line="642" selection-start-column="17" selection-end-line="642" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/PycharmProjects/Yad2Scraping/scrap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="24" column="41" selection-start-line="24" selection-start-column="41" selection-end-line="24" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.5/json/decoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="358" lean-forward="true" selection-start-line="358" selection-end-line="358" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/yad2Html (1).py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="110" column="12" selection-start-line="110" selection-start-column="12" selection-end-line="110" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Image_Denoising.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="387" lean-forward="true" selection-start-line="387" selection-end-line="387" />
+        <state relative-caret-position="117">
+          <caret line="429" column="28" selection-start-line="429" selection-start-column="28" selection-end-line="429" selection-end-column="28" />
           <folding>
-            <element signature="e#9460#9612#0" />
-            <element signature="e#9653#10098#0" />
-            <element signature="e#11194#11504#0" />
-            <element signature="e#16629#17085#1" />
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/requests/api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="57" selection-start-line="57" selection-end-line="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/requests/sessions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="621" selection-start-line="621" selection-end-line="621" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/requests/adapters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="117">
+          <caret line="512" column="19" lean-forward="true" selection-start-line="512" selection-start-column="19" selection-end-line="512" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="1663" selection-start-line="1663" selection-end-line="1663" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.5/json/encoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="178" selection-start-line="178" selection-end-line="178" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../NeedleInData/scrap_kickstarter/scrap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="130" column="35" selection-start-line="130" selection-start-column="35" selection-end-line="130" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
