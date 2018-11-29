@@ -13,6 +13,8 @@ y = {
     2: lambda x: np.log(np.sum(np.exp(np.dot(x, W)), axis=1))
 }
 
+def l2_loss(y_hat, y, lamb, w):
+    return np.mean(np.square(y_hat - y) + (lamb/2) * np.square(numpy.linalg.norm(w)))
 
 def learn_linear(X, Y, batch_size, lamb, iterations, learning_rate):
     """
@@ -34,6 +36,7 @@ def learn_linear(X, Y, batch_size, lamb, iterations, learning_rate):
     w = {func_id: np.zeros(size) for func_id in range(num_of_functions)}
 
     for func_id in range(num_of_functions):
+        x_test, y_test = X['test'], Y[func_id]['test']
         for _ in range(iterations):
 
             # draw a random batch:
@@ -42,9 +45,10 @@ def learn_linear(X, Y, batch_size, lamb, iterations, learning_rate):
 
             # calculate the loss and derivatives:
             p = np.dot(x, w[func_id])
-            loss = # TODO: YOUR CODE HERE
-            iteration_test_loss = # TODO: YOUR CODE HERE
-            dl_dw = # TODO: YOUR CODE HERE
+            loss = l2_loss(p, y, lamb, w[func_id])
+            iteration_test_loss = l2_loss(np.dot(x_test, w[func_id]), y_test, lamb, w[func_id])
+            dl_dp = 2 * (p - y)
+            dl_dw = np.mean(np.matlib.repmat(dl_dp.reshape((batch_size,1)),1, size)*x, axis=0)# + lamb*w[func_id]
 
             # update the model and record the loss:
             w[func_id] -= learning_rate * dl_dw
@@ -65,10 +69,10 @@ def forward(cnn_model, x):
     fwd = {}
     fwd['x'] = x
     fwd['o1'] = np.maximum(np.zeros(np.shape(x)), signal.convolve2d(x, [np.array(cnn_model['w1'])], mode='same'))
-    fwd['o2'] = np.maximum(np.zeros(np.shape(x)), signal.convolve2d(x, [cnn_model['w2']], mode='same'))
-    fwd['m'] = # TODO: YOUR CODE HERE
-    fwd['m_argmax'] = # TODO: YOUR CODE HERE
-    fwd['p'] = # TODO: YOUR CODE HERE
+    fwd['o2'] = np.maximum(np.zeros(np.shape(x)), signal.convolve2d(x, [cnn_model['w2']], mode='same')) #(32,4)
+    fwd['m'] = np.array([np.max(fwd['o1'], axis=1), np.max(fwd['o2'], axis=1)])
+    fwd['m_argmax'] = None# TODO: YOUR CODE HERE
+    fwd['p'] = np.dot(x, fwd['m'])
 
     return fwd
 
@@ -88,10 +92,11 @@ def backprop(model, y, fwd, batch_size):
     """
 
     # TODO: YOUR CODE HERE
-
-    dl_dw1 = # TODO: YOUR CODE HERE
-    dl_dw2 = # TODO: YOUR CODE HERE
-    dl_du = # TODO: YOUR CODE HERE
+    dl_dp = 2 * (fwd['p'] - fwd['y'])
+    dl_du = None #Where do we get this?
+    dl_dw1 = None
+    dl_dw2 = None# TODO: YOUR CODE HERE
+    dl_du = np.dot(dl_dp, fwd['m']) # TODO: Make sure shape is good, might need to np.mean
 
     return (dl_dw1, dl_dw2, dl_du)
 
@@ -118,9 +123,10 @@ def learn_cnn(X, Y, batch_size, lamb, iterations, learning_rate):
     for func_id in range(num_of_functions):
 
         # initialize the model:
-        models[func_id]['w1'] = # TODO: YOUR CODE HERE
-        models[func_id]['w2'] = # TODO: YOUR CODE HERE
-        models[func_id]['u'] = # TODO: YOUR CODE HERE
+        # TODO: The sizes are correct(hopefully), probably better to init NOT with zeros
+        models[func_id]['w1'] = np.zeros(3)
+        models[func_id]['w2'] = np.zeros(3)
+        models[func_id]['u'] = np.zeros(4)
 
         # train the network:
         for _ in range(iterations):
@@ -131,12 +137,12 @@ def learn_cnn(X, Y, batch_size, lamb, iterations, learning_rate):
 
             # calculate the loss and derivatives using back propagation:
             fwd = forward(models[func_id], x)
-            loss = # TODO: YOUR CODE HERE
+            loss = None #TODOs
             dl_dw1, dl_dw2, dl_du = backprop(models[func_id], y, fwd, batch_size)
 
             # record the test loss before updating the model:
             test_fwd = forward(models[func_id], X['test'])
-            iteration_test_loss = # TODO: YOUR CODE HERE
+            iteration_test_loss = None# TODO: YOUR CODE HERE
 
             # update the model using the derivatives and record the loss:
             models[func_id]['w1'] -= learning_rate * dl_dw1
@@ -147,6 +153,25 @@ def learn_cnn(X, Y, batch_size, lamb, iterations, learning_rate):
 
     return models, training_loss, test_loss
 
+def plot_loss(training_log, test_loss, title,only_test=True):
+    i = 0
+    for k in test_loss:
+        legend = []
+        plt.subplot(3, 1, i+1)
+        if only_test == False:
+            plt.plot(training_log[k])
+            legend.append('train')
+        plt.plot(test_loss[k])
+        legend.append('test')
+        plt.title(title + 'loss, func: ' + str(k))
+        plt.legend(legend)
+        i += 1
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+
+    # plt.title(title + " loss")
+    plt.tight_layout()
+    plt.show()
 
 if __name__ == '__main__':
 
@@ -160,5 +185,8 @@ if __name__ == '__main__':
         1 + np.random.randn(X['test'].shape[0]) * .01)}
          for i in range(len(y))}
 
+    # w, training_loss, test_loss = learn_linear(X, Y, 32, 0.001, 3000, 0.01)
+    # plot_loss(training_loss, test_loss, 'linear model', False)
 
-   # TODO: YOUR CODE HERE
+    w, training_loss, test_loss = learn_cnn(X, Y, 32, 0.001, 3000, 0.01)
+    plot_loss(training_loss, test_loss, 'cnn model', False)
