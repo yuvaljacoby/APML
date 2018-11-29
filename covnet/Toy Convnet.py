@@ -1,7 +1,9 @@
-from scipy import signal
+import numbers
+
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.matlib
-import matplotlib.pyplot as plt
+from scipy import signal
 
 # define the functions we would like to predict:
 num_of_functions = 3
@@ -13,8 +15,17 @@ y = {
     2: lambda x: np.log(np.sum(np.exp(np.dot(x, W)), axis=1))
 }
 
-def l2_loss(y_hat, y, lamb, w):
-    return np.mean(np.square(y_hat - y) + (lamb/2) * np.square(numpy.linalg.norm(w)))
+
+def l2_loss(y_hat, y, lamb, wights):
+    if isinstance(wights, numbers.Number):
+        wights = [wights]
+
+    reg_term = np.sum([(lamb / 2) * np.square(numpy.linalg.norm(w)) for w in wights])
+    return np.mean(np.square(y_hat - y) + reg_term)
+
+
+# (np.reshape(np.array(test_fwd['p']),(len(Y[func_id]['test']),)) - Y[func_id]['test']) ** 2) += lamb * np.linalg.norm(models[func_id]['w1']) \
+#                         + lamb * np.linalg.norm(models[func_id
 
 def learn_linear(X, Y, batch_size, lamb, iterations, learning_rate):
     """
@@ -38,17 +49,16 @@ def learn_linear(X, Y, batch_size, lamb, iterations, learning_rate):
     for func_id in range(num_of_functions):
         x_test, y_test = X['test'], Y[func_id]['test']
         for _ in range(iterations):
-
             # draw a random batch:
             idx = np.random.choice(len(Y[func_id]['train']), batch_size)
-            x, y = X['train'][idx,:], Y[func_id]['train'][idx]
+            x, y = X['train'][idx, :], Y[func_id]['train'][idx]
 
             # calculate the loss and derivatives:
             p = np.dot(x, w[func_id])
             loss = l2_loss(p, y, lamb, w[func_id])
             iteration_test_loss = l2_loss(np.dot(x_test, w[func_id]), y_test, lamb, w[func_id])
             dl_dp = 2 * (p - y)
-            dl_dw = np.mean(np.matlib.repmat(dl_dp.reshape((batch_size,1)),1, size)*x, axis=0)# + lamb*w[func_id]
+            dl_dw = np.mean(np.matlib.repmat(dl_dp.reshape((batch_size, 1)), 1, size) * x, axis=0)  # + lamb*w[func_id]
 
             # update the model and record the loss:
             w[func_id] -= learning_rate * dl_dw
@@ -67,12 +77,18 @@ def forward(cnn_model, x):
     """
 
     fwd = {}
-    fwd['x'] = x
+    fwd['x'] = x  # (32,4)
     fwd['o1'] = np.maximum(np.zeros(np.shape(x)), signal.convolve2d(x, [np.array(cnn_model['w1'])], mode='same'))
-    fwd['o2'] = np.maximum(np.zeros(np.shape(x)), signal.convolve2d(x, [cnn_model['w2']], mode='same')) #(32,4)
-    fwd['m'] = np.array([np.max(fwd['o1'], axis=1), np.max(fwd['o2'], axis=1)])
-    fwd['m_argmax'] = None# TODO: YOUR CODE HERE
-    fwd['p'] = np.dot(x, fwd['m'])
+    fwd['o2'] = np.maximum(np.zeros(np.shape(x)), signal.convolve2d(x, [cnn_model['w2']], mode='same'))  # (32,4)
+    fwd['m'] = np.array([np.max(fwd['o1'][:, :2], axis=1),
+                         np.max(fwd['o1'][:, 2:], axis=1),
+                         np.max(fwd['o2'][:, :2], axis=1),
+                         np.max(fwd['o2'][:, 2:], axis=1)])  # (4, 1)
+    fwd['m_argmax'] = np.array([np.argmax(fwd['o1'][:, :2], axis=1),
+                                np.argmax(fwd['o1'][:, 2:], axis=1) + 2,
+                                np.argmax(fwd['o2'][:, :2], axis=1),
+                                np.argmax(fwd['o2'][:, 2:], axis=1) + 2])  # (4, 1)
+    fwd['p'] = np.dot(cnn_model['u'], fwd['m'])  # (1,)
 
     return fwd
 
@@ -90,13 +106,27 @@ def backprop(model, y, fwd, batch_size):
             dl_dw2: the derivative of the w2 vector
             dl_du: the derivative of the u vector
     """
+    dl_dp = 2 * (fwd['p'] - y)  # (32,)
+    dp_dm = model['u']  # (4,)
+    dl_dm = np.multiply(dl_dp[:, None], dp_dm)  # (32,4)
 
-    # TODO: YOUR CODE HERE
-    dl_dp = 2 * (fwd['p'] - fwd['y'])
-    dl_du = None #Where do we get this?
-    dl_dw1 = None
-    dl_dw2 = None# TODO: YOUR CODE HERE
-    dl_du = np.dot(dl_dp, fwd['m']) # TODO: Make sure shape is good, might need to np.mean
+    dl_do1 = np.zeros((batch_size, size))
+    dl_do2 = np.zeros((batch_size, size))
+    dl_do1[np.arange(batch_size), fwd['m_argmax'][0, :]] = dl_dm[:, 0]
+    dl_do1[np.arange(batch_size), fwd['m_argmax'][1, :]] = dl_dm[:, 1]
+    dl_do2[np.arange(batch_size), fwd['m_argmax'][2, :]] = dl_dm[:, 2]
+    dl_do2[np.arange(batch_size), fwd['m_argmax'][3, :]] = dl_dm[:, 3]
+
+    x = np.insert(np.insert(fwd['x'], 0, 0, axis=0), len(fwd['x']) + 1, 0, axis=0)
+    x_mat = np.array([np.array([x[i - 1], x[i], x[i + 1]]).T for i in range(1, len(x) - 1)])
+    do1_dw = x_mat
+    do2_dw = x_mat
+    do1_dw[fwd['o1'] <= 0, :] = np.zeros(3)
+    do2_dw[fwd['o2'] <= 0, :] = np.zeros(3)
+
+    dl_dw1 = np.mean(np.multiply(dl_do1[:, :, None], do1_dw).sum(axis=1), axis=0)
+    dl_dw2 = np.mean(np.multiply(dl_do2[:, :, None], do2_dw).sum(axis=1), axis=0)
+    dl_du = np.mean(np.multiply(np.matlib.repmat(dl_dp, size, 1), fwd['m']), axis=1)
 
     return (dl_dw1, dl_dw2, dl_du)
 
@@ -123,26 +153,25 @@ def learn_cnn(X, Y, batch_size, lamb, iterations, learning_rate):
     for func_id in range(num_of_functions):
 
         # initialize the model:
-        # TODO: The sizes are correct(hopefully), probably better to init NOT with zeros
-        models[func_id]['w1'] = np.zeros(3)
-        models[func_id]['w2'] = np.zeros(3)
-        models[func_id]['u'] = np.zeros(4)
+        models[func_id]['w1'] = np.random.normal(0, 1, size - 1)
+        models[func_id]['w2'] = np.random.normal(0, 1, size - 1)
+        models[func_id]['u'] = np.random.normal(0, 1, size)
 
         # train the network:
         for _ in range(iterations):
-
             # draw a random batch:
             idx = np.random.choice(len(Y[func_id]['train']), batch_size)
-            x, y = X['train'][idx,:], Y[func_id]['train'][idx]
+            x, y = X['train'][idx, :], Y[func_id]['train'][idx]
 
             # calculate the loss and derivatives using back propagation:
             fwd = forward(models[func_id], x)
-            loss = None #TODOs
+            loss = l2_loss(fwd['p'], y, lamb, [models[func_id]['w1'], models[func_id]['w2'], models[func_id]['u']])
             dl_dw1, dl_dw2, dl_du = backprop(models[func_id], y, fwd, batch_size)
 
             # record the test loss before updating the model:
             test_fwd = forward(models[func_id], X['test'])
-            iteration_test_loss = None# TODO: YOUR CODE HERE
+            iteration_test_loss = l2_loss(test_fwd['p'], Y[func_id]['test'], lamb,
+                                          [models[func_id]['w1'], models[func_id]['w2'], models[func_id]['u']])
 
             # update the model using the derivatives and record the loss:
             models[func_id]['w1'] -= learning_rate * dl_dw1
@@ -153,40 +182,43 @@ def learn_cnn(X, Y, batch_size, lamb, iterations, learning_rate):
 
     return models, training_loss, test_loss
 
-def plot_loss(training_log, test_loss, title,only_test=True):
+
+def plot_loss(training_log, test_loss, title, only_test=True):
     i = 0
     for k in test_loss:
+        fig_title = title + ' loss, func id: ' + str(k)
         legend = []
-        plt.subplot(3, 1, i+1)
-        if only_test == False:
+        # plt.subplot(3, 1, i + 1)
+        if not only_test:
             plt.plot(training_log[k])
             legend.append('train')
         plt.plot(test_loss[k])
         legend.append('test')
-        plt.title(title + 'loss, func: ' + str(k))
+        plt.title(fig_title)
         plt.legend(legend)
         i += 1
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
 
-    # plt.title(title + " loss")
-    plt.tight_layout()
-    plt.show()
+        # plt.title(title + " loss")
+        plt.tight_layout()
+        plt.savefig("plots/" + fig_title.replace(" ", "_"), )
+        plt.show()
+
 
 if __name__ == '__main__':
-
     # generate the training and test data, adding some noise:
     X = dict(train=5 * (np.random.random((1000, size)) - .5),
              test=5 * (np.random.random((200, size)) - .5))
     Y = {i: {
         'train': y[i](X['train']) * (
-        1 + np.random.randn(X['train'].shape[0]) * .01),
+                1 + np.random.randn(X['train'].shape[0]) * .01),
         'test': y[i](X['test']) * (
-        1 + np.random.randn(X['test'].shape[0]) * .01)}
-         for i in range(len(y))}
+                1 + np.random.randn(X['test'].shape[0]) * .01)}
+        for i in range(len(y))}
 
-    # w, training_loss, test_loss = learn_linear(X, Y, 32, 0.001, 3000, 0.01)
-    # plot_loss(training_loss, test_loss, 'linear model', False)
+    w, training_loss, test_loss = learn_linear(X, Y, 50, 0.6, 500, 0.001)
+    plot_loss(training_loss, test_loss, 'linear model', False)
 
-    w, training_loss, test_loss = learn_cnn(X, Y, 32, 0.001, 3000, 0.01)
+    w, training_loss, test_loss = learn_cnn(X, Y, 50, 0.6, 500, 0.001)
     plot_loss(training_loss, test_loss, 'cnn model', False)
