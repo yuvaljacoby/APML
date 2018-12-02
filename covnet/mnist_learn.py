@@ -12,16 +12,9 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import scale
 
 
-#
-# def evalute_model(x_test, y_test, model, flatten=False):
-#     if flatten:
-#         x_test = flatten_x(x_test)
-#     score = model.evaluate(x_test, y_test, batch_size=128, verbose=1)
-#     return score
-
 def plot_models(model_logs, model_names, title, only_val=True):
     val_name = "_validation"
-    if only_val == False:
+    if not only_val:
         legend = [item for subset in [[name, name + val_name] for name in model_names] for item in subset]
     else:
         legend = [name + val_name for name in model_names]
@@ -30,7 +23,7 @@ def plot_models(model_logs, model_names, title, only_val=True):
     plt.subplot(2, 1, 1)
     for i in range(len(model_logs)):
         log = model_logs[i]
-        if only_val == False:
+        if not only_val:
             plt.plot(log.history['acc'])
         plt.plot(log.history['val_acc'])
     plt.title('accuracy')
@@ -49,31 +42,8 @@ def plot_models(model_logs, model_names, title, only_val=True):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(legend)
-    # plt.title(title + " loss")
-    plt.savefig(("plots2/" + str(title) + str(model_names[i])).replace(' ', '_').replace("0.", ""))
+    plt.savefig(("plots/" + str(title) + str(model_names[i])).replace(' ', '_').replace("0.", ""))
     plt.tight_layout()
-    # plt.show()
-
-
-# def plot_model(model_log, model_name):
-#     plt.figure()
-#     plt.subplot(2, 1, 1)
-#     plt.plot(model_log.history['acc'])
-#     plt.plot(model_log.history['val_acc'])
-#     plt.title(model_name + ' accuracy')
-#     plt.ylabel('accuracy')
-#     plt.xlabel('epoch')
-#     plt.legend(['train', 'test'])
-#
-#     plt.subplot(2, 1, 2)
-#     plt.plot(model_log.history['loss'])
-#     plt.plot(model_log.history['val_loss'])
-#     plt.title(model_name + 'loss')
-#     plt.ylabel('loss')
-#     plt.xlabel('epoch')
-#     plt.legend(['train', 'test'], loc='upper right')
-#     plt.tight_layout()
-#     plt.show()
 
 
 def train_model(x_train, y_train, x_test, y_test, model, opt=Adadelta()):
@@ -84,51 +54,11 @@ def train_model(x_train, y_train, x_test, y_test, model, opt=Adadelta()):
     model_log = model.fit(x_train, y_train, epochs=20, batch_size=1024, verbose=2,
                           validation_data=(x_test, y_test))
 
-    # plot_model(model_log, model_name)
     return model, model_log
 
 
 def flatten_x(X):
     return X.reshape(X.shape[0], X.shape[1] * X.shape[2])
-
-
-# def multi_train_multi_layer_linear_model(x_train, y_train, x_test, y_test, classes):
-#     num_classes = len(classes)
-#     x_train = flatten_x(x_train)
-#     x_test = flatten_x(x_test)
-#
-#     models = [
-#         Sequential(
-#             [Dense(256, input_shape=(x_train.shape[1],)), Activation('softmax'),
-#              Dense(16), Activation('softmax'),
-#              Dense(num_classes), Activation('softmax')]),
-#
-#         Sequential(
-#             [Dense(256, input_shape=(x_train.shape[1],)), Activation('softmax'),
-#              Dense(32), Activation('softmax'),
-#              Dense(num_classes), Activation('softmax')]),
-#
-#         # .49 after 20
-#         Sequential(
-#             [Dense(256, input_shape=(x_train.shape[1],)), Activation('softmax'),
-#              Dense(64), Activation('softmax'),
-#              Dense(num_classes), Activation('softmax')]),
-#
-#         # .466 after 20 epochs
-#         Sequential(
-#             [Dense(256, input_shape=(x_train.shape[1],)), Activation('softmax'),
-#              Dense(64), Activation('softmax'),
-#              Dense(64), Activation('softmax'),
-#              Dense(64), Activation('softmax'),
-#              Dense(num_classes), Activation('softmax')]),
-#     ]
-#
-#     logs = []
-#     for i in range(len(models)):
-#         _, log = train_model(x_train, y_train, x_test, y_test, models[i], opt=SGD(lr=0.001))
-#         logs.append(log)
-#
-#         plot_models([log], ["mlp num: " + str(i)], 'Compare between mlp models ' + str(i), False)
 
 
 def train_multi_layer_linear_model(x_train, y_train, x_test, y_test, num_classes, opt):
@@ -145,8 +75,6 @@ def train_linear_model(x_train, y_train, x_test, y_test, num_classes, opt):
     x_train = flatten_x(x_train)
     x_test = flatten_x(x_test)
     model = Sequential([
-        # Dense(256, input_shape=(x_train.shape[1],)),
-        # Activation('softmax'),
         Dense(num_classes),
         Activation('softmax'),
     ])
@@ -154,7 +82,7 @@ def train_linear_model(x_train, y_train, x_test, y_test, num_classes, opt):
     return train_model(x_train, y_train, x_test, y_test, model, opt=opt)
 
 
-def train_covnet(x_train, y_train, x_test, y_test, num_classes, opt=SGD(lr=0.1)):
+def train_covnet(x_train, y_train, x_test, y_test, num_classes, opt):
     x_train = np.expand_dims(x_train, axis=3)
     x_test = np.expand_dims(x_test, axis=3)
     model = Sequential()
@@ -187,11 +115,10 @@ def compare_models(x_train, y_train, x_test, y_test, classes, from_pickle=True):
                      }, open("models.pickle", "wb"))
 
     plot_models([linear_log, mlp_log, covnet_log], ['linear', 'mlp', 'covnet'], 'Compare between models', True)
-    # plot_models([linear_log, mlp_log], ['linear', 'mlp'], 'Compare between models', False)
 
 
 def hyper_parameter_covnet(x_train, y_train, x_test, y_test, classes, from_pickle=True):
-    lrs = [10**-10, 10**-5, 10**-3, 10**-2]
+    lrs = [10 ** -10, 10 ** -5, 10 ** -3, 10 ** -2]
     models = []
     logs = []
     legend = []
@@ -211,7 +138,7 @@ def hyper_parameter_covnet(x_train, y_train, x_test, y_test, classes, from_pickl
         pickle.dump({str(legend[i]): {'log': logs[i], 'model': models[i]} for i in range(len(legend))},
                     open("covnet_hyperparameter.pickle", "wb"))
 
-    plot_models(logs, legend, 'Covnet hyperparameter - learning rate', True)
+    plot_models(logs, legend, 'Covnet_hyperparameter_learning rate', True)
 
 
 def plot_decode_encode(encoder, autoencoder, x_test):
@@ -260,8 +187,6 @@ def pca_loss(x_train, x_test):
 
 
 def train_autoencoder(x_train, x_test):
-    # x_train = flatten_x(x_train)
-    # x_test = flatten_x(x_test)
     autoencoder = Sequential()
     activation = 'relu'
     autoencoder.add(Dense(512, activation=activation, input_shape=(784,)))
@@ -312,16 +237,10 @@ if __name__ == "__main__":
     hyperparameter_pickle = True
     classes = np.unique(y_train)
 
-    # autoencoder(x_train, y_train, x_test, y_test)
+    autoencoder(x_train, y_train, x_test, y_test)
 
     y_train = keras_utils.to_categorical(y_train, len(classes))
     y_test = keras_utils.to_categorical(y_test, len(classes))
 
-    # plot_decode_encode(load_model("models/encoder.pickle"), load_model("models/autoencoder.pickle"),
-    #                    np.expand_dims(x_test, axis=3))
-    # multi_train_multi_layer_linear_model(x_train, y_train, x_test, y_test, classes)
-    # compare_models(x_train, y_train, x_test, y_test, classes, compare_models_pickle)
+    compare_models(x_train, y_train, x_test, y_test, classes, compare_models_pickle)
     hyper_parameter_covnet(x_train, y_train, x_test, y_test, classes, hyperparameter_pickle)
-
-    # covnet_score = evalute_model(x_test, y_test, covnet_model)
-    # print('covnet_score ', covnplot_modelet_score)

@@ -24,8 +24,6 @@ def l2_loss(y_hat, y, lamb, wights):
     return np.mean(np.square(y_hat - y) + reg_term)
 
 
-# (np.reshape(np.array(test_fwd['p']),(len(Y[func_id]['test']),)) - Y[func_id]['test']) ** 2) += lamb * np.linalg.norm(models[func_id]['w1']) \
-#                         + lamb * np.linalg.norm(models[func_id
 
 def learn_linear(X, Y, batch_size, lamb, iterations, learning_rate):
     """
@@ -185,10 +183,10 @@ def learn_cnn(X, Y, batch_size, lamb, iterations, learning_rate):
 
 def plot_loss(training_log, test_loss, title, only_test=True):
     i = 0
+    plt.figure()
     for k in test_loss:
         fig_title = title + ' loss, func id: ' + str(k)
         legend = []
-        # plt.subplot(3, 1, i + 1)
         if not only_test:
             plt.plot(training_log[k])
             legend.append('train')
@@ -202,8 +200,8 @@ def plot_loss(training_log, test_loss, title, only_test=True):
 
         # plt.title(title + " loss")
         plt.tight_layout()
-        # plt.savefig("plots/" + fig_title.replace(" ", "_"), )
         plt.show()
+        plt.savefig("plots/" + fig_title.replace(" ", "_"), )
 
 
 if __name__ == '__main__':
@@ -217,8 +215,8 @@ if __name__ == '__main__':
                 1 + np.random.randn(X['test'].shape[0]) * .01)}
         for i in range(len(y))}
 
-    # w, training_loss, test_loss = learn_linear(X, Y, 50, 0.6, 500, 0.001)
-    # plot_loss(training_loss, test_loss, 'linear model', False)
+    w, training_loss, test_loss = learn_linear(X, Y, 1024, 0.5, 750, 10**-3)
+    plot_loss(training_loss, test_loss, 'linear model', False)
 
-    w, training_loss, test_loss = learn_cnn(X, Y, 32, 0.5, 500, 0.0001)
+    w, training_loss, test_loss = learn_cnn(X, Y, 1024, 0.5, 750, 10**-5)
     plot_loss(training_loss, test_loss, 'cnn model', False)
