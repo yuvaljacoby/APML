@@ -202,7 +202,7 @@ def plot_loss(training_log, test_loss, title, only_test=True):
 
         # plt.title(title + " loss")
         plt.tight_layout()
-        plt.savefig("plots/" + fig_title.replace(" ", "_"), )
+        # plt.savefig("plots/" + fig_title.replace(" ", "_"), )
         plt.show()
 
 
@@ -217,8 +217,8 @@ if __name__ == '__main__':
                 1 + np.random.randn(X['test'].shape[0]) * .01)}
         for i in range(len(y))}
 
-    w, training_loss, test_loss = learn_linear(X, Y, 50, 0.6, 500, 0.001)
-    plot_loss(training_loss, test_loss, 'linear model', False)
+    # w, training_loss, test_loss = learn_linear(X, Y, 50, 0.6, 500, 0.001)
+    # plot_loss(training_loss, test_loss, 'linear model', False)
 
-    w, training_loss, test_loss = learn_cnn(X, Y, 50, 0.6, 500, 0.001)
+    w, training_loss, test_loss = learn_cnn(X, Y, 32, 0.5, 500, 0.0001)
     plot_loss(training_loss, test_loss, 'cnn model', False)
