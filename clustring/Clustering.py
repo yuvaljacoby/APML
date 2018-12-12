@@ -3,13 +3,13 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances
-
+from functools import partial
 
 def gussians_data(k=4):
     num_points = 200
     data = np.empty((num_points * k, 2))
-    mu_scale = 10
-    std_scale = 2
+    mu_scale = 100
+    std_scale = 1
     for i in range(k):
         data[num_points * i: num_points * (i + 1), 0] = np.random.normal(np.random.random(1) * mu_scale,
                                                                          np.random.random(1) * std_scale,
@@ -121,7 +121,8 @@ def cost_diameter(X):
     :param X: a sub-matrix of the NxD data matrix that defines a cluster.
     :return: The cost
     """
-    return 1
+    dist = euclid(X,X)
+    return np.max(dist)
 
 def euclid(X, Y):
     """
@@ -277,20 +278,33 @@ def spectral(X, k, similarity_param, similarity=gaussian_kernel):
     return kmeans(np.matrix(norm_eiganvectors), k)
 
 
+def explore_k(X, algorithm, title, cost=cost_diameter, search_range=range(1,15)):
+    costs = []
+    for i in search_range:
+        assignment, _ = algorithm(X, i)
+        costs.append(np.average([cost(X[assignment == j]) for j in np.unique(assignment)]))
+
+    plt.scatter(list(search_range), costs)
+    plt.title(title)
+    plt.show()
+
+
+
 if __name__ == '__main__':
     # Y = np.matrix([[-40, -1200], [5, 1], [1, 3], [2, 5], [100, 100]])
-    # microarray_exploration()
-    k = 4
-    # circles = circles_example()
-    data = gussians_data(k)
-    assignment, centroids = spectral(data, 4, 3)
-    plot_clusters(data, assignment, "kmeans gussians data")
-    # print(euclidean_centroid(X))
+    k = 10
 
-    # plot_clusters(Y, kmeans(Y, 3)[0])
-    # data = microarray_exploration()
-    # assignment, centroids = kmeans(data, 15)
-    # plot_clusters(data, assignment, "kmeans clusters")
+    partial_spectral = partial(spectral, similarity_param=3)
+    # data = gussians_data(k)
+    data = microarray_exploration()
+    explore_k(data, partial_spectral, "diameter kmeans different k's", cost=cost_diameter, search_range=range(12,15))
+    # assignment, centroids = spectral(data, 4, 3)
+    # plot_clusters(data, assignment, "kmeans gussians data")
+
+    data = microarray_exploration()
+    assignment, centroids = spectral(data, 10, 3)
+    plot_clusters(data, assignment, "kmeans clusters")
+
     # assignment, centroids = spectral(gussian, k, 10)
     # print('assignment per cluster:\n', np.asarray(np.unique(assignment, return_counts=True)).T)
     # plot_clusters(gussian, assignment, "spectral clusters")
