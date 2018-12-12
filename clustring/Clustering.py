@@ -2,25 +2,27 @@ import pickle
 
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics.pairwise import euclidean_distances
 
 
 def gussians_data(k=4):
     num_points = 200
     data = np.empty((num_points * k, 2))
-    mu_scale = 100
-    std_scale = 5
+    mu_scale = 10
+    std_scale = 2
     for i in range(k):
-        data[num_points * i : num_points * (i+1), 0] = np.random.normal(np.random.random(1) * mu_scale,
-                                                                        np.random.random(1) * std_scale,
-                                                                        num_points)
-        data[num_points * i : num_points * (i+1), 1] = np.random.normal(np.random.random(1) * mu_scale,
-                                                                        np.random.random(1) * std_scale,
-                                                                        num_points)
+        data[num_points * i: num_points * (i + 1), 0] = np.random.normal(np.random.random(1) * mu_scale,
+                                                                         np.random.random(1) * std_scale,
+                                                                         num_points)
+        data[num_points * i: num_points * (i + 1), 1] = np.random.normal(np.random.random(1) * mu_scale,
+                                                                         np.random.random(1) * std_scale,
+                                                                         num_points)
 
     np.random.shuffle(data)
-    # plt.scatter(data[:,0], data[:,1])
-    # plt.show()
+    plt.scatter(data[:,0], data[:,1])
+    plt.show()
     return np.matrix(data)
+
 
 def circles_example():
     """
@@ -80,6 +82,8 @@ def microarray_exploration(data_path='microarray_data.pickle',
     with open(conds_path, 'rb') as f:
         conds = pickle.load(f)
 
+    return np.matrix(data)
+    print(conds)
     # look at a single value of the data matrix:
     i = 128
     j = 63
@@ -111,6 +115,14 @@ def microarray_exploration(data_path='microarray_data.pickle',
     plt.show()
 
 
+def cost_diameter(X):
+    """
+    return the diameter of X
+    :param X: a sub-matrix of the NxD data matrix that defines a cluster.
+    :return: The cost
+    """
+    return 1
+
 def euclid(X, Y):
     """
     return the pair-wise euclidean distance between two data matrices.
@@ -118,14 +130,8 @@ def euclid(X, Y):
     :param Y: MxD matrix.
     :return: NxM euclidean distance matrix.
     """
-    # we want for each row in X, Y to compute: sqrt((x-y)**2) == sqrt(x*x -2x*y + y*y)
-    xx = np.einsum('ij,ij->i', X, X)[:, None]
-    yy = np.einsum('ij,ij->i', Y, Y)[None, :]
-    dist = np.dot(X, Y.T) * -2
-    dist += xx
-    dist += yy
 
-    return np.sqrt(dist)
+    return euclidean_distances(X, Y)
 
 
 def euclidean_centroid(X):
@@ -151,7 +157,7 @@ def kmeans_pp_init(X, k, metric):
     num_points = X.shape[0]
     prob_points = np.zeros((num_points, 1))
     centroids_idx[0] = np.random.choice(num_points, 1)
-    min_dist = np.full((1,X.shape[0]), np.infty)
+    min_dist = np.full((1, X.shape[0]), np.infty)
     for i in range(1, k):
         dist_to_last = metric(X[centroids_idx[i - 1], :], X)
         min_dist = np.minimum(dist_to_last, min_dist)
@@ -160,7 +166,7 @@ def kmeans_pp_init(X, k, metric):
         # prob_points[centroids_idx[:i]] = 0
         # make sure sum is 1
         # prob_points = prob_points / np.sum(prob_points)
-        assert(np.abs(np.sum(prob_points) - 1) < 0.005)
+        assert (np.abs(np.sum(prob_points) - 1) < 0.005)
         centroids_idx[i] = np.random.choice(num_points, 1, False, prob_points.flatten())
         # centroids_idx = np.append(centroids_idx, )
     return X[centroids_idx, :]
@@ -201,19 +207,20 @@ def kmeans(X, k, iterations=10, metric=euclid, center=euclidean_centroid, init=k
     for _ in range(iterations):
         assignment = np.squeeze(kmaens_assignment(X, centroids, metric))
         for i in range(k):
-            centroids[i,:] = center(X[np.nonzero(assignment == i)[1], :])
+            centroids[i, :] = center(X[np.nonzero(assignment == i)[0], :])
 
     return (np.squeeze(np.asarray(assignment)), centroids)
 
 
-def plot_clusters(X, assignment):
-    assert(X.shape[1] == 2)
+def plot_clusters(X, assignment, title):
     clusters = np.unique(assignment)
     X = np.asarray(X)
     plt.scatter(X[:, 0], X[:, 1], c=assignment, cmap=plt.cm.get_cmap("rainbow", len(clusters)))
     plt.colorbar(ticks=range(len(clusters)))
+    plt.title(title)
+    # plt.savefig("plots/" + title.replace(" ", "_"))
     plt.show()
-
+    plt.clf()
 
 
 def gaussian_kernel(X, sigma):
@@ -224,7 +231,7 @@ def gaussian_kernel(X, sigma):
     :return: NxN similarity matrix.
     """
 
-    # TODO: YOUR CODE HERE
+    return np.exp(-(X ** 2) / (2 * sigma ** 2))
 
 
 def mnn(X, m):
@@ -235,7 +242,13 @@ def mnn(X, m):
     :return: NxN similarity matrix.
     """
 
-    # TODO: YOUR CODE HERE
+    N = X.shape[0]
+    neighbors = np.empty((N, N))
+    for i in range(N):
+        neighbors[i, np.argsort(X[i, :])[1:m + 1]] = 1
+
+    mutual_neighbors = np.logical_or(neighbors, neighbors.T)
+    return neighbors
 
 
 def spectral(X, k, similarity_param, similarity=gaussian_kernel):
@@ -248,19 +261,37 @@ def spectral(X, k, similarity_param, similarity=gaussian_kernel):
     :return: clustering, as in the kmeans implementation.
     """
 
-    # TODO: YOUR CODE HERE
+    N = X.shape[0]
+    S = euclid(X, X)
+    W = similarity(S, similarity_param)
+    # w_col_sum =
+    D = np.diag(np.sum(W, axis=1))
+    D_root = np.sqrt(D)
+    L = np.eye(N, N) - np.matmul(D_root, np.matmul(W, D_root))
+    eiganvalue, eiganvectors = np.linalg.eigh(L)
+
+    norm_eiganvectors = eiganvectors[:, np.argsort(eiganvalue)[:k]]
+    # TODO: Correct normaliztion???
+    cols_sum = np.sum(norm_eiganvectors, axis=0)
+    norm_eiganvectors /= np.repeat(cols_sum[:, None], N, axis=1).T
+    return kmeans(np.matrix(norm_eiganvectors), k)
 
 
 if __name__ == '__main__':
+    # Y = np.matrix([[-40, -1200], [5, 1], [1, 3], [2, 5], [100, 100]])
+    # microarray_exploration()
     k = 4
     # circles = circles_example()
-    gussian = gussians_data(k)
+    data = gussians_data(k)
+    assignment, centroids = spectral(data, 4, 3)
+    plot_clusters(data, assignment, "kmeans gussians data")
     # print(euclidean_centroid(X))
-    Y = np.matrix([[-40, -1200], [5, 1], [1, 3], [2, 5], [100, 100]])
+
     # plot_clusters(Y, kmeans(Y, 3)[0])
-    assignment, centroids = kmeans(gussian, k)
-    print('assignment per cluster:\n', np.asarray(np.unique(assignment, return_counts=True)).T)
-
-
-    plot_clusters(gussian, assignment)
+    # data = microarray_exploration()
+    # assignment, centroids = kmeans(data, 15)
+    # plot_clusters(data, assignment, "kmeans clusters")
+    # assignment, centroids = spectral(gussian, k, 10)
+    # print('assignment per cluster:\n', np.asarray(np.unique(assignment, return_counts=True)).T)
+    # plot_clusters(gussian, assignment, "spectral clusters")
     # print(euclid(X, Y))
