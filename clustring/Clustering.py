@@ -1,27 +1,29 @@
 import pickle
+from functools import partial
 
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances
-from functools import partial
+from sklearn.preprocessing import normalize
 
-def gussians_data(k=4):
-    num_points = 200
-    data = np.empty((num_points * k, 2))
-    mu_scale = 100
-    std_scale = 1
+
+def gaussian_data(k=4, dim=5, plot=False):
+    num_points = 100  # per cluster
+    data = np.empty((num_points * k, dim))
+    std_scale = 0.1
+    mean_scale = 10
     for i in range(k):
-        data[num_points * i: num_points * (i + 1), 0] = np.random.normal(np.random.random(1) * mu_scale,
-                                                                         np.random.random(1) * std_scale,
-                                                                         num_points)
-        data[num_points * i: num_points * (i + 1), 1] = np.random.normal(np.random.random(1) * mu_scale,
-                                                                         np.random.random(1) * std_scale,
-                                                                         num_points)
-
+        for j in range(dim):
+            std = np.random.random(1) * std_scale
+            mean = np.random.random(1) * mean_scale
+            data[num_points * i: num_points * (i + 1), j] = np.random.normal(mean,
+                                                                             std,
+                                                                             num_points)
     np.random.shuffle(data)
-    plt.scatter(data[:,0], data[:,1])
-    plt.show()
-    return np.matrix(data)
+    if dim == 2 and plot:
+        plt.scatter(data[:, 0], data[:, 1])
+        plt.show()
+    return data
 
 
 def circles_example():
@@ -32,14 +34,14 @@ def circles_example():
     t = np.arange(0, 2 * np.pi, 0.03)
     length = np.shape(t)
     length = length[0]
-    circle1 = np.matrix([np.cos(t) + 0.1 * np.random.randn(length),
-                         np.sin(t) + 0.1 * np.random.randn(length)])
-    circle2 = np.matrix([2 * np.cos(t) + 0.1 * np.random.randn(length),
-                         2 * np.sin(t) + 0.1 * np.random.randn(length)])
-    circle3 = np.matrix([3 * np.cos(t) + 0.1 * np.random.randn(length),
-                         3 * np.sin(t) + 0.1 * np.random.randn(length)])
-    circle4 = np.matrix([4 * np.cos(t) + 0.1 * np.random.randn(length),
-                         4 * np.sin(t) + 0.1 * np.random.randn(length)])
+    circle1 = np.array([np.cos(t) + 0.1 * np.random.randn(length),
+                        np.sin(t) + 0.1 * np.random.randn(length)])
+    circle2 = np.array([2 * np.cos(t) + 0.1 * np.random.randn(length),
+                        2 * np.sin(t) + 0.1 * np.random.randn(length)])
+    circle3 = np.array([3 * np.cos(t) + 0.1 * np.random.randn(length),
+                        3 * np.sin(t) + 0.1 * np.random.randn(length)])
+    circle4 = np.array([4 * np.cos(t) + 0.1 * np.random.randn(length),
+                        4 * np.sin(t) + 0.1 * np.random.randn(length)])
     circles = np.concatenate((circle1, circle2, circle3, circle4), axis=1)
 
     # plt.plot(circles[0, :], circles[1, :], '.k')
@@ -56,9 +58,9 @@ def apml_pic_example(path='APML_pic.pickle'):
 
     with open(path, 'rb') as f:
         apml = pickle.load(f)
-
-    plt.plot(apml[:, 0], apml[:, 1], '.')
-    plt.show()
+    return apml
+    # plt.plot(apml[:, 0], apml[:, 1], '.')
+    # plt.show()
 
 
 def microarray_exploration(data_path='microarray_data.pickle',
@@ -82,7 +84,7 @@ def microarray_exploration(data_path='microarray_data.pickle',
     with open(conds_path, 'rb') as f:
         conds = pickle.load(f)
 
-    return np.matrix(data)
+    return data
     print(conds)
     # look at a single value of the data matrix:
     i = 128
@@ -115,14 +117,17 @@ def microarray_exploration(data_path='microarray_data.pickle',
     plt.show()
 
 
-def cost_diameter(X):
+def cost_l2(X, center):
     """
     return the diameter of X
     :param X: a sub-matrix of the NxD data matrix that defines a cluster.
     :return: The cost
     """
-    dist = euclid(X,X)
-    return np.max(dist)
+
+    dist = euclid(X, center) ** 2
+    # dist = get_upper_tringale(dist)
+    return np.sum(dist)
+
 
 def euclid(X, Y):
     """
@@ -131,7 +136,6 @@ def euclid(X, Y):
     :param Y: MxD matrix.
     :return: NxM euclidean distance matrix.
     """
-
     return euclidean_distances(X, Y)
 
 
@@ -156,17 +160,14 @@ def kmeans_pp_init(X, k, metric):
 
     centroids_idx = np.empty(k, dtype=int)
     num_points = X.shape[0]
-    prob_points = np.zeros((num_points, 1))
+    # prob_points = np.zeros((num_points, 1))
     centroids_idx[0] = np.random.choice(num_points, 1)
     min_dist = np.full((1, X.shape[0]), np.infty)
     for i in range(1, k):
-        dist_to_last = metric(X[centroids_idx[i - 1], :], X)
+        dist_to_last = metric(X[centroids_idx[i - 1], :][None, :], X)
         min_dist = np.minimum(dist_to_last, min_dist)
         prob_points = np.asarray((min_dist / np.sum(min_dist)).T)
-        # don't choose same center twice..
-        # prob_points[centroids_idx[:i]] = 0
         # make sure sum is 1
-        # prob_points = prob_points / np.sum(prob_points)
         assert (np.abs(np.sum(prob_points) - 1) < 0.005)
         centroids_idx[i] = np.random.choice(num_points, 1, False, prob_points.flatten())
         # centroids_idx = np.append(centroids_idx, )
@@ -181,6 +182,9 @@ def kmaens_assignment(X, centers, metric=euclid):
     :param metric: metric function to find distance between row and center
     :return: Mx1 assignment of each row to one of the clusters
     '''
+    k, d = centers.shape
+    # Might happen that centers will be none in high dimensions space
+    # centers = centers[~np.isnan(centers)].reshape(-1,d)
     dist = metric(X, centers)
     assignment = np.argmin(dist, axis=1)
     assert (assignment.shape[0] == X.shape[0])
@@ -188,7 +192,7 @@ def kmaens_assignment(X, centers, metric=euclid):
     return assignment
 
 
-def kmeans(X, k, iterations=10, metric=euclid, center=euclidean_centroid, init=kmeans_pp_init):
+def kmeans(X, k, iterations=10, metric=euclid, center=euclidean_centroid, init=kmeans_pp_init, cost_func=None):
     """
     The K-Means function, clustering the data X into k clusters.
     :param X: A NxD data matrix.
@@ -206,11 +210,16 @@ def kmeans(X, k, iterations=10, metric=euclid, center=euclidean_centroid, init=k
     """
     centroids = init(X, k, metric)
     for _ in range(iterations):
-        assignment = np.squeeze(kmaens_assignment(X, centroids, metric))
+        assignment = kmaens_assignment(X, centroids, metric)
         for i in range(k):
-            centroids[i, :] = center(X[np.nonzero(assignment == i)[0], :])
+            centroids[i, :] = center(X[assignment == i, :])
 
-    return (np.squeeze(np.asarray(assignment)), centroids)
+    assignment, centers = (np.squeeze(np.asarray(assignment)), centroids)
+    if not cost_func:
+        return assignment, centers
+    else:
+        costs = np.average([cost_func(X[assignment == j], centers[j, :][None, :]) for j in range(centers.shape[0])])
+        return assignment, centers, costs
 
 
 def plot_clusters(X, assignment, title):
@@ -219,8 +228,21 @@ def plot_clusters(X, assignment, title):
     plt.scatter(X[:, 0], X[:, 1], c=assignment, cmap=plt.cm.get_cmap("rainbow", len(clusters)))
     plt.colorbar(ticks=range(len(clusters)))
     plt.title(title)
-    # plt.savefig("plots/" + title.replace(" ", "_"))
-    plt.show()
+    plt.savefig("plots/" + title.replace(" ", "_").replace(".", ""))
+    # plt.show()
+    plt.clf()
+
+
+def plot_four_clusters(X, assignments, titles):
+    X = np.asarray(X)
+    fig = plt.figure()
+    for k in range(0,min(len(assignments), 4)):
+        ax = fig.add_subplot(2,2,k+1)
+        clusters = np.unique(assignments[k])
+        ax.scatter(X[:, 0], X[:, 1], c=assignments[k], cmap=plt.cm.get_cmap("rainbow", len(clusters)))
+        ax.set_title(titles[k])
+    # plt.show()
+    plt.savefig("plots/" + titles[0].replace(" ", "_"))
     plt.clf()
 
 
@@ -232,7 +254,7 @@ def gaussian_kernel(X, sigma):
     :return: NxN similarity matrix.
     """
 
-    return np.exp(-(X ** 2) / (2 * sigma ** 2))
+    return np.exp(- (X) / (2 * np.square(sigma)))
 
 
 def mnn(X, m):
@@ -248,11 +270,10 @@ def mnn(X, m):
     for i in range(N):
         neighbors[i, np.argsort(X[i, :])[1:m + 1]] = 1
 
-    mutual_neighbors = np.logical_or(neighbors, neighbors.T)
-    return neighbors
+    return np.logical_or(neighbors, neighbors.T)
 
 
-def spectral(X, k, similarity_param, similarity=gaussian_kernel):
+def spectral(X, k, similarity_param, similarity=gaussian_kernel, plot_similarity = False):
     """
     Cluster the data into k clusters using the spectral clustering algorithm.
     :param X: A NxD data matrix.
@@ -262,50 +283,131 @@ def spectral(X, k, similarity_param, similarity=gaussian_kernel):
     :return: clustering, as in the kmeans implementation.
     """
 
-    N = X.shape[0]
+    N, d = X.shape
     S = euclid(X, X)
     W = similarity(S, similarity_param)
-    # w_col_sum =
+
     D = np.diag(np.sum(W, axis=1))
-    D_root = np.sqrt(D)
-    L = np.eye(N, N) - np.matmul(D_root, np.matmul(W, D_root))
+    D_root = np.linalg.pinv(np.sqrt(D))  # D^-0.5
+    L = np.eye(N, N) - np.dot(D_root, np.dot(W, D_root))
     eiganvalue, eiganvectors = np.linalg.eigh(L)
 
-    norm_eiganvectors = eiganvectors[:, np.argsort(eiganvalue)[:k]]
-    # TODO: Correct normaliztion???
-    cols_sum = np.sum(norm_eiganvectors, axis=0)
-    norm_eiganvectors /= np.repeat(cols_sum[:, None], N, axis=1).T
-    return kmeans(np.matrix(norm_eiganvectors), k)
+    valid_k = min(len(eiganvalue), k)
+    if k != valid_k:
+        print('log: Error, spectral clustering more clusters then eigan values')
+
+    eiganvectors[:, np.where(eiganvalue < 0)] *= -1
+    eiganvalue[np.where(eiganvalue < 0)] *= -1
+
+    norm_eiganvectors = normalize(eiganvectors[:, np.argsort(eiganvalue)[:valid_k]])
+
+    assignment, centers = kmeans(norm_eiganvectors, valid_k)
+
+    if plot_similarity:
+        title = "spectral clustering using %s and param: %.3f" % (similarity.__name__, similarity_param)
+        shuffled_w = np.random.permutation(W)
+        fig = plt.figure()
+        ax1 = fig.add_subplot(1, 2, 1)
+        ax1.imshow(shuffled_w, cmap='hot')
+        ax1.set_title('shuffled')
+        ax2 = fig.add_subplot(1,2,2)
+        ax2.imshow(W[np.argsort(assignment)], cmap='hot')
+        ax2.set_title('sorted')
+        fig.suptitle(title)
+        # plt.show()
+        plt.savefig("plots/" + title.replace(" ", "_").replace(".", ""))
+        plt.clf()
+
+    return assignment, centers
 
 
-def explore_k(X, algorithm, title, cost=cost_diameter, search_range=range(1,15)):
+
+def explore_k(X, algorithm, title, cost=cost_l2, search_range=range(1, 15)):
     costs = []
     for i in search_range:
-        assignment, _ = algorithm(X, i)
-        costs.append(np.average([cost(X[assignment == j]) for j in np.unique(assignment)]))
+        assignment, centers, cur_cost = algorithm(X, i, cost_func=cost)
+        costs.append(cur_cost)
+        print('log: param: %d cost: %.3f' % (i, costs[-1]))
 
     plt.scatter(list(search_range), costs)
+    plt.xlabel('amount of clusters (k)')
+    plt.ylabel('cost')
     plt.title(title)
-    plt.show()
+    plt.savefig(('plots/' + title).replace(" ", "_"))
+    # plt.show()
+    plt.clf()
 
+
+def get_upper_tringale(X):
+    rows = X.shape[0]
+    return (X.flatten())[:round(rows ** 2 / 2)]
+
+
+def distances_histogram(X, title, percentile=5, plot=True):
+    dist = euclid(X, X)
+    # dist is symmetric --> take only the first half...
+    dist = get_upper_tringale(dist)
+    if plot:
+        plt.hist(dist)
+        plt.xlabel('distance')
+        plt.ylabel('number of points')
+        plt.title(title)
+        plt.savefig("plots/" + title.replace(" ", "_"))
+        # plt.show()
+        plt.clf()
+    return np.percentile(dist, [percentile])
+
+
+def experiment_spectral(data, k, title, similarity_param_range=range(10, 100, 10), similarity=gaussian_kernel):
+    assignments = []
+    # similarity_param_range = similarity_param_range[:2]
+    for p in similarity_param_range:
+        assignment, centroids = spectral(data, k, p, similarity)
+        # plot_clusters(data, assignment, title % (p))
+        assignments.append(list(assignment))
+        print('log: spectral clustring on param:', p)
+        # centroids.append(centroids)
+
+    plot_four_clusters(data, assignments, [title % p for p in similarity_param_range])
+
+
+def experiment_mnn_m(data, data_name, k, m_range=range(5, 205, 50)):
+    experiment_spectral(data, k, ("spectral " + data_name + " data, mnn: %d"), m_range, mnn)
 
 
 if __name__ == '__main__':
-    # Y = np.matrix([[-40, -1200], [5, 1], [1, 3], [2, 5], [100, 100]])
-    k = 10
+    np.random.seed(42)
 
-    partial_spectral = partial(spectral, similarity_param=3)
-    # data = gussians_data(k)
-    data = microarray_exploration()
-    explore_k(data, partial_spectral, "diameter kmeans different k's", cost=cost_diameter, search_range=range(12,15))
-    # assignment, centroids = spectral(data, 4, 3)
-    # plot_clusters(data, assignment, "kmeans gussians data")
+    ########## SECTION 2.5.1 - Choosing k, using the "elbow" method ###########
+    # generate data for k = 20 clusters, we expect to see a drop in the cost around k=20.
+    # The data is generated randomly from normal distribution, depends on the distributions we might see the
+    # drop before...
+    k = 20
+    d = 2
+    data = gaussian_data(k, d)
+    explore_k(data, kmeans, "l2 cost kmeans on {} multivariate gaussians - distances histogram"
+              .format(k,d), cost=cost_l2, search_range=range(5, 50))
 
-    data = microarray_exploration()
-    assignment, centroids = spectral(data, 10, 3)
-    plot_clusters(data, assignment, "kmeans clusters")
+    best_k = 15
+    assignment, centroids = kmeans(data, best_k)
+    plot_clusters(data, assignment, "kmeans multivariate gaussians data, k: %d" % (best_k))
 
-    # assignment, centroids = spectral(gussian, k, 10)
-    # print('assignment per cluster:\n', np.asarray(np.unique(assignment, return_counts=True)).T)
-    # plot_clusters(gussian, assignment, "spectral clusters")
-    # print(euclid(X, Y))
+
+    ######### Spectral clustring APML pic - Similarity Graph ###############
+    # Find m
+    k = 9  #prior knowledge
+    data = apml_pic_example()
+    experiment_mnn_m(data, 'APML pic', k)
+    best_m = 55 # just trail and error
+
+    # sigma we choose according to the precentile in the distance matrix
+    sigma = distances_histogram(data, "APML pic - distances histogram", plot=True, percentile=5)
+    assignment, centroids = spectral(data, k, sigma, plot_similarity=True)
+    plot_clusters(data, assignment, "gaussian kernel APML pic data - sigma: %.3f" % (sigma))
+    assignment, centroids = spectral(data, k, best_m, mnn, plot_similarity=True)
+    plot_clusters(data, assignment, "mnn APML pic data - best_m: %d" % (best_m))
+
+    ########### microarray ##############
+    # data = microarray_exploration()
+    # assignment, centroids = spectral(data, 10, 3)
+    # plot_clusters(data, assignment, "kmeans clusters")
