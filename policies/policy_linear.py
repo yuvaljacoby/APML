@@ -1,22 +1,59 @@
 from policies import base_policy as bp
 import numpy as np
-import tensorflow as tf
-from tensorflow.python import keras
+from time import time
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
 from collections import namedtuple
 import random
 
 
 Policy = bp.Policy
 
-NUM_ACTIONS = len(Policy.ACTIONS)
+ACTIONS = Policy.ACTIONS
+NUM_ACTIONS = len(ACTIONS)
+
+# ACTION_TO_INT = dict([])
 
 
-Transition = namedtuple('Transition', ('state', 'action', 'next_state', 'reward'))
+Transition = namedtuple('Transition', ('prev_state', 'prev_action', 'next_state', 'reward'))
 
 BATCH_SIZE = 32
 MAX_CAPACITY = 8192
 GAMMA = 0.99
 LR = 0.001
+
+########################################################################################################################
+################################################# POLICIES #############################################################
+########################################################################################################################
+
+
+def random_action():
+    random.seed(time())
+    rand_int = random.uniform(0, NUM_ACTIONS)
+    return ACTIONS[rand_int]
+
+
+def make_epsilon_greedy_policy(eps_start, eps_end, eps_decay):
+    def eps_greedy_policy(t, q_values):
+        random.seed(time())
+        eps_threshold = eps_end + (eps_start - eps_end) * \
+            np.exp(-1. * t / eps_decay)
+        if random.uniform(0, 1) > eps_threshold:
+            return q_values.max(1)[1].view(1, 1)
+        else:
+            return random_action()
+    return eps_greedy_policy
+
+
+def make_q_values_policy():
+    return lambda t, q_values: F.softmax(q_values, dim=1).multinomial(num_samples=1)
+
+
+########################################################################################################################
+################################################# UTILITIES ############################################################
+########################################################################################################################
 
 
 class ReplayMemory(object):
@@ -25,54 +62,44 @@ class ReplayMemory(object):
         self.memory = []
         self.position = 0
 
-    def push(self, *args):
+    def push(self, **args):
         """Saves a transition."""
         if len(self.memory) < self.capacity:
             self.memory.append(None)
-        self.memory[self.position] = Transition(*args)
+        t = Transition(**args)
+        self.memory[self.position] = t
         self.position = (self.position + 1) % self.capacity
 
     def sample(self, batch_size):
+        random.seed(time())
         return random.sample(self.memory, batch_size)
 
     def __len__(self):
         return len(self.memory)
 
+########################################################################################################################
+################################################### POLICY #############################################################
+########################################################################################################################
 
 
-def preprocess_state(state):
-    board = state[0]
-    head = state[1]
-    head_pos = head[0]
-    head_direction = head[1]
-    print(board.shape, type(board))
-    print(head_pos[0], head_pos[1])
-    print(ACTION_TO_INT[head_direction])
-    return np.concatenate((head, board))
+class LinearAgent(nn.Module):
 
+    def __init__(self, in_dim, out_dim):
+        super(LinearAgent, self).__init__()
+        self.fc1 = nn.Linear(in_features=in_dim, out_features=100)
+        # self.fc2 = nn.Linear(in_features=24, out_features=24)
+        # self.fc2 = nn.Linear(in_features=24, out_features=24)
+        # self.fc3 = nn.Linear(in_features=24, out_features=24)
+        self.head = nn.Linear(in_features=100, out_features=out_dim)
 
-class LinearAgent(keras.Model):
-
-    def __init__(self, num_units_state: int, num_actions: int, *args, **kwargs):
-        super(LinearAgent, self).__init__(*args, **kwargs)
-        self.dense1 = keras.layers.Dense(units=num_units_state // 2)
-        self.dense2 = keras.layers.Dense(units=64)
-        self.dense3 = keras.layers.Dense(units=32)
-        self.dense4 = keras.layers.Dense(units=num_actions, activation=keras.activations.softmax)
-
-    def call(self, inputs, training=None, mask=None):
-        x = self.dense1(inputs)
-        x = self.dense2(x)
-        x = self.dense3(x)
-        x = self.dense4(x)
-        return x
-
-    def compute_output_shape(self, input_shape):
-        return None, NUM_ACTIONS
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        # x = F.relu(self.fc2(x))
+        # x = F.relu(self.fc3(x))
+        return self.head(x)
 
 
 class Linear(bp.Policy):
-
 
     def cast_string_args(self, policy_args):
         """
@@ -80,13 +107,19 @@ class Linear(bp.Policy):
         :param policy_args: an arg -> string value map as received in command line.
         :return: A map of string -> value after casting to useful objects, these will be added as members to the policy
         """
-        args = {
-            'gamma': float(policy_args.get('g', GAMMA)),
-            'learning_rate': float(policy_args.get('lr', LR)),
-            'batch_size': int(policy_args.get('bs', 32)),
-            'max_capacity': int(policy_args.get('mc', MAX_CAPACITY)),
-        }
-        return args
+        # args = {
+        #     'gamma': float(policy_args.get('g', GAMMA)),
+        #     'learning_rate': float(policy_args.get('lr', LR)),
+        #     'batch_size': int(policy_args.get('bs', BATCH_SIZE)),
+        #     'max_capacity': int(policy_args.get('mc', MAX_CAPACITY)),
+        #     # 'policy': make_q_values_policy(),
+        # }
+        self.gamma = float(policy_args.get('g', GAMMA))
+        self.learning_rate = float(policy_args.get('lr', LR))
+        self.batch_size = int(policy_args.get('bs', BATCH_SIZE))
+        self.max_capacity = int(policy_args.get('mc', MAX_CAPACITY))
+        self.policy = make_q_values_policy()
+        return {}
 
     def init_run(self):
         """
@@ -100,9 +133,52 @@ class Linear(bp.Policy):
         ACTIONS = Policy.ACTIONS
         NUM_ACTIONS = len(ACTIONS)
         num_units_input = int(np.prod(board_size))
+        # print(torch.cuda.device.idx)
+        # exit()
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.replay_memory = ReplayMemory(capacity=self.max_capacity)
-        self.agent = LinearAgent(num_units_state=num_units_input, num_actions=NUM_ACTIONS)
-        self.agent.compile(optimizer=keras.optimizers.adam(), loss=keras.losses.mse)
+        self.estimator = LinearAgent(in_dim=num_units_input, out_dim=NUM_ACTIONS).to(device=self.device)
+        self.optimizer = optim.Adam(self.estimator.parameters(), lr=self.learning_rate)
+        self.augment_data = False
+
+    def get_action(self, step, state, is_deterministic=False):
+        q_values = self.estimator.forward(state)
+        with torch.no_grad():
+            if is_deterministic:
+                return F.softmax(q_values, dim=1).argmax().to(self.device)
+            else:
+                return self.policy(step, q_values).to(self.device)
+
+    def preprocess(self, prev_state, prev_action, reward, new_state):
+        prev_state = torch.tensor(prev_state.reshape([1, -1]), dtype=torch.float, device=self.device)
+
+        reward = torch.tensor([reward], dtype=torch.float, device=self.device)
+        new_state = torch.tensor(new_state.reshape([1, -1]), dtype=torch.float, device=self.device)
+        return prev_state, prev_action, reward, new_state
+
+
+    def augment(self, prev_state, prev_action, reward, new_state):
+        """
+        4.6 Using Symmetries To Your Advantage
+            If you’re using a relatively large state representation, you may want to think of ways of learning
+            faster by taking advantage of certain symmetries in the game. This way, you may turn a single
+            state-action-reward triplet into more than one triplet, and in this way you could learn faster and
+            “see more states” without actually visiting them.
+        :param prev_state: the previous state from which the policy acted.
+        :param prev_action: the previous action the policy chose.
+        :param reward: the reward given by the environment following the previous action.
+        :param new_state: the new state that the agent is presented with, following the previous action.
+        :return:
+        """
+        pass
+        # results = []
+        # action_idx = ACTIONS.index(prev_action)
+        # i = np.arange()
+        # while
+        #     prev_x = np.rot90(prev_state, k=i)
+        #     new_x = np.rot90(new_state, k=i)
+        # for x in data:
+        #     preprocess(x). add to memory
 
 
     def learn(self, round, prev_state, prev_action, reward, new_state, too_slow):
@@ -148,8 +224,7 @@ class Linear(bp.Policy):
         """
         board, head = new_state
         head_pos, direction = head
-        self.replay_memory.push(Transition(state=prev_state, action=prev_action, next_state=new_state, reward=reward))
-        q_values = self.agent.predict(board)
-        print(q_values)
-        action = np.argmax(q_values, axis=0)
-        return np.argmax(q_values)
+        if self.augment_data:
+            self.augment(prev_state=prev_state, prev_action=prev_action, reward=reward, new_state=new_state)
+        self.replay_memory.push(prev_state=prev_state, prev_action=prev_action, next_state=new_state, reward=reward)
+        return self.get_action(step=round, state=board)
