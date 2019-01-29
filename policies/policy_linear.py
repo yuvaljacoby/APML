@@ -2,6 +2,7 @@ from policies import base_policy as bp
 import numpy as np
 from time import time
 import torch
+from torchvision.transforms import functional as TVF
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -14,7 +15,17 @@ Policy = bp.Policy
 ACTIONS = Policy.ACTIONS
 NUM_ACTIONS = len(ACTIONS)
 
-# ACTION_TO_INT = dict([])
+ACTION_TO_INT_MAPPING = {
+    'L': 0,
+    'R': 1,
+    'F': 2,
+}
+INT_TO_ACTION_MAPPING = {
+    0: 'L',
+    1: 'R',
+    2: 'F',
+}
+
 
 
 Transition = namedtuple('Transition', ('prev_state', 'prev_action', 'next_state', 'reward'))
@@ -72,7 +83,7 @@ class ReplayMemory(object):
 
     def sample(self, batch_size):
         random.seed(time())
-        return random.sample(self.memory, batch_size)
+        return random.sample(self.memory, min(batch_size, len(self)))
 
     def __len__(self):
         return len(self.memory)
@@ -82,10 +93,10 @@ class ReplayMemory(object):
 ########################################################################################################################
 
 
-class LinearAgent(nn.Module):
+class LinearModel(nn.Module):
 
     def __init__(self, in_dim, out_dim):
-        super(LinearAgent, self).__init__()
+        super(LinearModel, self).__init__()
         self.fc1 = nn.Linear(in_features=in_dim, out_features=100)
         # self.fc2 = nn.Linear(in_features=24, out_features=24)
         # self.fc2 = nn.Linear(in_features=24, out_features=24)
@@ -133,27 +144,33 @@ class Linear(bp.Policy):
         ACTIONS = Policy.ACTIONS
         NUM_ACTIONS = len(ACTIONS)
         num_units_input = int(np.prod(board_size))
-        # print(torch.cuda.device.idx)
-        # exit()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.replay_memory = ReplayMemory(capacity=self.max_capacity)
-        self.estimator = LinearAgent(in_dim=num_units_input, out_dim=NUM_ACTIONS).to(device=self.device)
+        self.estimator = LinearModel(in_dim=num_units_input, out_dim=NUM_ACTIONS).to(device=self.device)
         self.optimizer = optim.Adam(self.estimator.parameters(), lr=self.learning_rate)
-        self.augment_data = False
+        self.augment_data = True
 
     def get_action(self, step, state, is_deterministic=False):
         q_values = self.estimator.forward(state)
         with torch.no_grad():
             if is_deterministic:
-                return F.softmax(q_values, dim=1).argmax().to(self.device)
+                action = F.softmax(q_values, dim=1).argmax()
             else:
-                return self.policy(step, q_values).to(self.device)
+                action = self.policy(step, q_values)
+            action = int(action.cpu().numpy())
+            return INT_TO_ACTION_MAPPING[action]
 
     def preprocess(self, prev_state, prev_action, reward, new_state):
-        prev_state = torch.tensor(prev_state.reshape([1, -1]), dtype=torch.float, device=self.device)
-
+        if prev_state is not None:  # And prev_action is not None..
+            prev_action = ACTION_TO_INT_MAPPING[prev_action]
+            prev_board, prev_head = prev_state
+            prev_board = torch.tensor(prev_board.reshape([1, -1]), dtype=torch.float, device=self.device)
+            prev_state = (prev_board, prev_head)
+            prev_action = torch.tensor([prev_action], dtype=torch.float, device=self.device)
         reward = torch.tensor([reward], dtype=torch.float, device=self.device)
-        new_state = torch.tensor(new_state.reshape([1, -1]), dtype=torch.float, device=self.device)
+        new_board, new_head = new_state
+        new_board = torch.tensor(new_board.reshape([1, -1]), dtype=torch.float, device=self.device)
+        new_state = (new_board, new_head)
         return prev_state, prev_action, reward, new_state
 
 
@@ -170,15 +187,32 @@ class Linear(bp.Policy):
         :param new_state: the new state that the agent is presented with, following the previous action.
         :return:
         """
-        pass
-        # results = []
-        # action_idx = ACTIONS.index(prev_action)
-        # i = np.arange()
-        # while
-        #     prev_x = np.rot90(prev_state, k=i)
-        #     new_x = np.rot90(new_state, k=i)
-        # for x in data:
-        #     preprocess(x). add to memory
+        if prev_state is None:
+            return
+        self.log(prev_state)
+        self.log(prev_action)
+        self.log(new_state)
+        return
+        results = []
+        prev_board, prev_head = prev_state
+        new_board, new_head = new_state
+        i = np.fmod(ACTION_TO_INT_MAPPING[prev_action]+1, NUM_ACTIONS)  # start_idx
+        count = 2
+        while count > 0:
+            new_prev_board = np.rot90(prev_board, k=i)
+            new_new_board = np.rot90(new_board, k=i)
+            new_prev_action = INT_TO_ACTION_MAPPING[i]
+            i += 1
+            count -= 1
+            new_prev_state = (new_prev_board, )
+            new_new_state = (new_new_board, )
+            results.append({'prev_state': new_prev_state,
+                            'prev_action': new_prev_action,
+                            'reward': reward,
+                            'new_state': new_new_state})
+        for x in results:
+            prev_state, prev_action, reward, new_state = self.preprocess(**x)
+            self.replay_memory.push(prev_state=prev_state, prev_action=prev_action, next_state=new_state, reward=reward)
 
 
     def learn(self, round, prev_state, prev_action, reward, new_state, too_slow):
@@ -200,10 +234,10 @@ class Linear(bp.Policy):
         gamma = self.gamma
         learning_rate = self.learning_rate
         batch_size = self.batch_size
-        transitions = self.replay_memory.sample(batch_size)
+        # transitions = self.replay_memory.sample(batch_size)
         # Transpose the batch (see http://stackoverflow.com/a/19343/3343043 for
         # detailed explanation).
-        batch = Transition(*zip(*transitions))
+        # batch = Transition(*zip(*transitions))
 
 
     def act(self, round, prev_state, prev_action, reward, new_state, too_slow):
@@ -222,9 +256,13 @@ class Linear(bp.Policy):
                         computation time smaller (by lowering the batch size for example)...
         :return: an action (from Policy.Actions) in response to the new_state.
         """
-        board, head = new_state
-        head_pos, direction = head
-        if self.augment_data:
-            self.augment(prev_state=prev_state, prev_action=prev_action, reward=reward, new_state=new_state)
-        self.replay_memory.push(prev_state=prev_state, prev_action=prev_action, next_state=new_state, reward=reward)
-        return self.get_action(step=round, state=board)
+        prev_state_tensor, prev_action_tensor, reward_tensor, new_state_tensor = self.preprocess(prev_state, prev_action, reward, new_state)
+        if prev_state is not None:  # and prev_action is not None. (both are None first call to 'act')
+            if self.augment_data:
+                self.augment(prev_state=prev_state, prev_action=prev_action, reward=reward, new_state=new_state)
+            new_board_tensor, new_head = new_state_tensor
+            head_pos, direction = new_head
+            self.replay_memory.push(prev_state=prev_state_tensor, prev_action=prev_action_tensor, next_state=new_state_tensor, reward=reward_tensor)
+        else:
+            new_board_tensor, new_head = new_state_tensor
+        return self.get_action(step=round, state=new_board_tensor)
