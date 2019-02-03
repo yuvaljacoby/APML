@@ -11,7 +11,7 @@ import random
 
 # -P Linear(g=0.99,lr=0.01,bs=32) -pit 5  # This is bad
 # -P Linear(g=0.1,lr=0.001,bs=32) -pit 5  # This is good! Lower gamma better results?
-
+# -P Linear(g=0.01,lr=0.001,bs=32) -pit 5 -D 10000000  # This seems good. long game duration too
 
 Policy = bp.Policy
 
@@ -363,5 +363,7 @@ class Linear(bp.Policy):
         prev_state, prev_action, reward, new_state = self.preprocess_data(prev_state, prev_action, reward, new_state)
         if round != 0:
             self.agent.add_to_memory(prev_state, prev_action, reward, new_state)
+            if reward == -5:  # if Terminal new_state (reward == -5)
+                self.agent.add_to_memory(prev_state, prev_action, reward, None)
         action = self.agent.get_action(round, state=new_state)
         return INT_TO_ACTION_MAPPING[action]
