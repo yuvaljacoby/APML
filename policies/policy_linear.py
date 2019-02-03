@@ -9,6 +9,7 @@ import torch.optim as optim
 from collections import namedtuple
 import random
 
+# -P Linear(g=0.99,lr=0.01,bs=32) -pit 5
 
 Policy = bp.Policy
 
@@ -42,10 +43,10 @@ INT_TO_DIRECTION_MAPPING = {
 
 Transition = namedtuple('Transition', ('prev_state', 'prev_action', 'reward', 'new_state'))
 
-BATCH_SIZE = 32
-MAX_CAPACITY = 8192
-GAMMA = 0.99
-LR = 0.001
+DEFAULT_BATCH_SIZE = 32
+DEFAULT_MAX_CAPACITY = 8192
+DEFAULT_GAMMA = 0.99
+DEFAULT_LR = 0.001
 
 ########################################################################################################################
 ################################################# POLICIES #############################################################
@@ -83,17 +84,15 @@ class LinearModel(nn.Module):
 
     def __init__(self, in_dim, out_dim):
         super(LinearModel, self).__init__()
-        self.fc1 = nn.Linear(in_features=in_dim, out_features=600)
-        self.fc2 = nn.Linear(in_features=600, out_features=300)
+        # self.fc1 = nn.Linear(in_features=in_dim, out_features=600)
+        # self.fc2 = nn.Linear(in_features=600, out_features=300)
         # self.fc3 = nn.Linear(in_features=24, out_features=24)
-        self.head = nn.Linear(in_features=300, out_features=out_dim)
+        self.head = nn.Linear(in_features=in_dim, out_features=out_dim)
 
     def forward(self, x):
-        x = torch.tanh(self.fc1(x))
-        x = torch.tanh(self.fc2(x))
+        # x = torch.tanh(self.fc1(x))
+        # x = torch.tanh(self.fc2(x))
         x = self.head(x)
-        # x = F.relu(self.fc2(x))
-        # x = F.relu(self.fc3(x))
         return x
 
 
@@ -209,6 +208,9 @@ class Agent(object):
 
 class Linear(bp.Policy):
 
+    def normalize_to_neg_pos_1(self, s):
+        return (2 * (s - np.min(s)) / np.ptp(s)) - 1
+
     def _preprocess_state(self, state):
         if state is None:
             return None
@@ -218,6 +220,7 @@ class Linear(bp.Policy):
         pos = np.array((pos[0], pos[1]), dtype=np.float32).reshape([1, 2])
         dir = np.array([DIRECTION_TO_INT_MAPPING[dir]], dtype=np.float32).reshape([1, 1])
         s = np.concatenate((pos, dir, board), axis=1)
+        s = self.normalize_to_neg_pos_1(s)
         return torch.tensor(s, dtype=torch.float, device=self._device)
 
     def preprocess_data(self, prev_state, prev_action, reward, new_state):
@@ -244,6 +247,22 @@ class Linear(bp.Policy):
         :param new_state: the new state that the agent is presented with, following the previous action.
         :return:
         """
+        def _augment_flip_lr(prev_state, prev_action, reward, new_state):
+            self.log("\n"+str(prev_state))
+            prev_state = np.fliplr(prev_state)
+            self.log("\n"+str(prev_state))
+
+        def _augment_flip_ud(prev_state, prev_action, reward, new_state):
+            pass
+
+        def _augment_rotations(prev_state, prev_action, reward, new_state):
+            print("hmmmmphz")
+            for i in range(1, 3):  # [1, 2] => 2 more possible rotations TODO Maybe consider mirror for more examples?
+                n_p_state, n_p_action, n_reward, n_n_state = self.preprocess_data(prev_state=np.rot90(prev_state, k=i),
+                                                                                  prev_action=prev_action,
+                                                                                  reward=reward,
+                                                                                  new_state=np.rot90(new_state, k=i))
+                self.agent.add_to_memory(n_p_state, n_p_action, n_reward, n_n_state)
         if prev_state is None or prev_action is None:
             return
         prev_state = prev_state.cpu().numpy()
@@ -251,14 +270,10 @@ class Linear(bp.Policy):
         reward = reward.cpu().numpy()
         new_state = new_state.cpu().numpy()
 
-
+        _augment_flip_lr(prev_state, prev_action, reward, new_state)
+        _augment_flip_ud(prev_state, prev_action, reward, new_state)
         if self.board_size[0] == self.board_size[1]:  # additional augmentation
-            for i in range(1, 3):  # [1, 2] => 2 more possible rotations TODO Maybe consider mirror for more examples?
-                n_p_state, n_p_action, n_reward, n_n_state = self.preprocess_data(prev_state=np.rot90(prev_state, k=i),
-                                                                                  prev_action=prev_action,
-                                                                                  reward=reward,
-                                                                                  new_state=np.rot90(new_state, k=i))
-                self.agent.add_to_memory(n_p_state, n_p_action, n_reward, n_n_state)
+            _augment_rotations(prev_state, prev_action, reward, new_state)
 
 
 
@@ -275,10 +290,10 @@ class Linear(bp.Policy):
         #     'max_capacity': int(policy_args.get('mc', MAX_CAPACITY)),
         #     # 'policy': make_q_values_policy(),
         # }
-        self.gamma = float(policy_args.get('g', GAMMA))
-        self.learning_rate = float(policy_args.get('lr', LR))
-        self.batch_size = int(policy_args.get('bs', BATCH_SIZE))
-        self.max_capacity = int(policy_args.get('mc', MAX_CAPACITY))
+        self.gamma = float(policy_args.get('g', DEFAULT_GAMMA))
+        self.learning_rate = float(policy_args.get('lr', DEFAULT_LR))
+        self.batch_size = int(policy_args.get('bs', DEFAULT_BATCH_SIZE))
+        self.max_capacity = int(policy_args.get('mc', DEFAULT_MAX_CAPACITY))
         self.policy = make_q_values_policy()
         return {}
 
@@ -341,11 +356,8 @@ class Linear(bp.Policy):
                         computation time smaller (by lowering the batch size for example)...
         :return: an action (from Policy.Actions) in response to the new_state.
         """
-        # board, head = new_state
-        # pos, dir = head
-        # print(board.shape)
-        # print(pos[0], pos[1])
-        # print(dir)
+        # if round != 0:
+        #     self.augment(prev_state, prev_action, reward, new_state)
         prev_state, prev_action, reward, new_state = self.preprocess_data(prev_state, prev_action, reward, new_state)
         if round != 0:
             self.agent.add_to_memory(prev_state, prev_action, reward, new_state)
