@@ -9,7 +9,9 @@ import torch.optim as optim
 from collections import namedtuple
 import random
 
-# -P Linear(g=0.99,lr=0.01,bs=32) -pit 5
+# -P Linear(g=0.99,lr=0.01,bs=32) -pit 5  # This is bad
+# -P Linear(g=0.1,lr=0.001,bs=32) -pit 5  # This is good! Lower gamma better results?
+
 
 Policy = bp.Policy
 
