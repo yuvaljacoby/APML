@@ -1,0 +1,429 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language hebrew
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\lang english
+APML - Manifold
+\end_layout
+
+\begin_layout Author
+יובל יעקבי,
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+302247077
+\end_layout
+
+\begin_layout Section*
+חלק תאורטי
+\end_layout
+
+\begin_layout Subsubsection*
+שאלה 
+\numeric on
+1.1
+\numeric off
+ -
+\family roman
+\series bold
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+PCA
+\end_layout
+
+\begin_layout Standard
+מטריצת ה
+\lang english
+COV
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+היא:
+\begin_inset Formula $S=\frac{1}{n-1}\sum_{i=1}^{n}\left(x_{i}-\bar{x}\right)\left(x_{i}-\bar{x}\right)^{T}$
+\end_inset
+
+, נניח כי 
+\begin_inset Formula $\bar{x}=0$
+\end_inset
+
+ כלומר:
+\begin_inset Formula 
+\[
+S=\frac{1}{n-1}\sum_{i=1}^{n}x_{i}\left(x_{i}\right)^{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+הראה כי מטרייצת ה
+\lang english
+COV
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $S$
+\end_inset
+
+ היא
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+PSD
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+נזכור כי אחד התנאים לכך שמטריצה 
+\begin_inset Formula $S$
+\end_inset
+
+ היא
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+PSD
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ זה ש לכל 
+\begin_inset Formula $v\in\mathbb{R}^{n}$
+\end_inset
+
+ מתקיים 
+\begin_inset Formula $vSv^{t}\ge0$
+\end_inset
+
+ נראה זאת:
+\begin_inset Formula 
+\[
+vSv^{t}=v\left(\frac{1}{n-1}\sum_{i=1}^{n}x_{i}\left(x_{i}\right)^{T}\right)v^{T}=\frac{1}{n-1}\left(\sum_{i=1}^{n}v_{i}\sum_{i=1}^{n}\sum_{j=1}^{n}x_{i,j}^{2}\sum_{j=1}^{n}v_{j}\right)=\frac{1}{n-1}\left(\sum_{i=1}^{n}\sum_{j=1}^{n}v_{i}^{2}x_{i,j}^{2}\right)\ge0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+הראה כי הדאטא נמצא בתת מרחב 
+\begin_inset Formula $d$
+\end_inset
+
+ מימדי 
+\begin_inset Formula $V\subset\mathbb{R}^{n}$
+\end_inset
+
+ אמ
+\begin_inset Quotes erd
+\end_inset
+
+מ הדרגה של 
+\begin_inset Formula $S$
+\end_inset
+
+ היא 
+\begin_inset Formula $d$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+נראה כי דרגת המטריצה 
+\begin_inset Formula $X$
+\end_inset
+
+ ודרגת המטריצה 
+\begin_inset Formula $S$
+\end_inset
+
+ שוות
+\end_layout
+
+\begin_layout Standard
+נסמן 
+\begin_inset Formula $rank\left(X\right)=k$
+\end_inset
+
+, כלומר ישנם 
+\begin_inset Formula $k$
+\end_inset
+
+ שורות ב
+\begin_inset Formula $X$
+\end_inset
+
+ שפורסות את כל המטריצה, נסמן אותן ב
+\begin_inset Formula $x_{1},\dots,x_{k}$
+\end_inset
+
+, נשים לב כי כל שורה ב
+\begin_inset Formula $S$
+\end_inset
+
+ היא קומבינציה לינארית של שורות 
+\begin_inset Formula $X$
+\end_inset
+
+ ולכן הדרגה של 
+\begin_inset Formula $S$
+\end_inset
+
+ תיהיה בדיוק כמו ב
+\begin_inset Formula $X$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+הראה כי הקאורדינטות החדשות הן איזומטריה של 
+\begin_inset Formula $V$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+כמו
+\end_layout
+
+\end_deeper
+\begin_layout Section*
+חלק פרקטי
+\end_layout
+
+\end_body
+\end_document

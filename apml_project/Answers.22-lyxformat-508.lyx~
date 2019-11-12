@@ -1,0 +1,1971 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+% Added by lyx2lyx
+\renewcommand{\textendash}{--}
+\renewcommand{\textemdash}{---}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language hebrew
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\lang english
+APML - Final Project - Snake
+\end_layout
+
+\begin_layout Standard
+בן אסף )
+\lang english
+hivemind
+\lang hebrew
+(,
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+305432833
+\end_layout
+
+\begin_layout Standard
+יובל יעקבי )
+\lang english
+yuvalja
+\lang hebrew
+(,
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+302247077
+\end_layout
+
+\begin_layout Section*
+ייצוג המשחק
+\end_layout
+
+\begin_layout Standard
+תיאור המשחק הוא רביעייה:
+\end_layout
+
+\begin_layout Itemize
+המצב בתור הקודם
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+לוח- מערך דו מימדי המכיל מספרים בטווח 
+\begin_inset Formula $\left[-1,9\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+מיקום הראש - זוג אינדקסים על הלוח
+\end_layout
+
+\begin_layout Itemize
+כיוון התנועה - אחד מתוך 
+\begin_inset Formula $\left\{ N,S,E,W\right\} $
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+המהלך בתור הקודם - אחד מתוך 
+\begin_inset Formula $\left\{ L,R,F\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+התוצאה של המהלך הזה )
+\lang english
+reward
+\lang hebrew
+( - מספר שלם
+\end_layout
+
+\begin_layout Itemize
+המצב בתור הבא )כפי שהגדרנו מצב בתור הקודם(
+\end_layout
+
+\begin_layout Standard
+הדרך שבה בחרנו לקודד את המידע הזה היא כדלקמן:
+\end_layout
+
+\begin_layout Itemize
+מצב
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+גודל הלוח הוא קבוע אבל יכול להיות גדול מאוד )עד כדי 
+\begin_inset Formula $250\times250$
+\end_inset
+
+(, כלומר יכול להגיד למימד מאוד גדול
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+החיסרון המרכזי במימד כזה גדול הוא שצריך שנצטרך המון דוגמאות כדי ללמוד את
+ כל הקומבינציות של לוחות
+\end_layout
+
+\begin_layout Standard
+על מנת לעזור לרשת, רצינו למקד אותה במה שחשוב במשחק, וזה הצעדים הבאים ובשביל
+ זה מספיק להסתכל על חלון )קטן יחסית( מסביב לראש, לכן עבור הלמידה תמיד לקחנו
+ חלון מסביב לראש )כלומר הראש במרכז החלון(, זה מאפשר לנו ללמוד מספר קטן משמעותית
+ של מצבים ומגדיל את הסיכוי של הרשת להפריד בין עיקר לתפל.
+\end_layout
+
+\begin_layout Standard
+זהו הפרמטר הראשון של האלגוריתם שלנו - גודל החלון חקרנו בטווח של 
+\begin_inset Formula $\left[2,9\right]$
+\end_inset
+
+ כדי למצוא גודל אופטימלי.
+\end_layout
+
+\begin_layout Standard
+כמובן שבמקרה והראש היה בשוליים השלמנו את החלון מהצד השני ע"פ חוקי המשחק.
+\end_layout
+
+\begin_layout Standard
+את הערכים של הלוח נרמלנו ל
+\begin_inset Formula $\left[-1,1\right]$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+כיוון התנועה - מהסימטריה של המשחק כיוון התנועה בעצם לא משנה דבר, לכן דאגנו
+ תמיד בתהליך הלמידה "לנרמל" את הכיוון, כלומר סובבנו את הלוח כך שבזמן הלמידה
+ תמיד הראש מסתכל למעלה )
+\begin_inset Formula $N$
+\end_inset
+
+(, שוב זה מקטין לנו משמעותית את מספר המצבים האפשריים של המשחק
+\end_layout
+
+\begin_layout Itemize
+מהלך - את המהלך קודדנו רק בעצמאות מספר בין
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $\left\{ 0,1,2\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+תוצאת המהלך הקודם - כפי שלמדנו בכיתה, זה בעצם עזר לנו לקבוע האם מהלך הוא
+ טוב או לא וכמה הוא טוב )לתת "פרסים" ו"עונשים" לרשת(
+\end_layout
+
+\begin_layout Subsection*
+מודל
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+בחרנו בשיטה של
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+Deep q learning
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+, כלומר רשת נוירונים שעושה הערכה ל
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+q learning
+\lang hebrew
+.
+\end_layout
+
+\begin_layout Standard
+לאחר קריאה באינטרנט ראינו שתי הרחבות לשיטה הבסיסית:
+\end_layout
+
+\begin_layout Itemize
+\noindent
+
+\series bold
+\bar under
+רשת כפולה - 
+\lang english
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "double_q_learning"
+
+\end_inset
+
+double Q learning
+\series default
+\bar default
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+על מנת להבין את האיטאיציה מאחורי הרשת הכפולה, נזכר ב
+\lang english
+Q Learning
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+רגיל:
+\begin_inset Formula 
+\[
+Q\left(s,a\right)=r\left(s,a\right)+\gamma\max_{a}Q\left(S',a\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+נזכר שבתחילת תהליך הלמידה אנחנו לא ממש יודעים מהם הפעולות הטובות, לכן לבחור
+ את הפעולה שתיתן לנו את ה
+\lang english
+q_value
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+הכי טוב )הוא רועש, עוד לא למדנו אותנו( זה לא בהכרח טוב, מהסיבה הזו אנחנו
+ מפרידים את זה לשתי רשתות:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Q\left(s,a\right)=r\left(s,a\right)+\gamma\underset{t\_net}{\underbrace{Q\left(S',\underset{q\_net}{\underbrace{argmax_{a}Q\left(s',a\right)}}\right)}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+רשת
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ה
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+q_net
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+משמשת אותנו ל
+\begin_inset Formula $Q$
+\end_inset
+
+ הפנימי, כלומר מהי הפעולה הכי טובה לעשות עכשיו
+\end_layout
+
+\begin_layout Standard
+רשת ה
+\lang english
+target_net
+\lang hebrew
+ על מנת לחשב מהם ערכי ה
+\lang english
+q_values
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+הנכונים
+\end_layout
+
+\begin_layout Standard
+את האימון אנחנו עושים באופן תדיר )כל
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+5
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\numeric off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+מהלכים במקרה שלנו( על רשת ה
+\lang english
+q_net
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+וכל 
+\begin_inset Formula $m$
+\end_inset
+
+ איטרציות )פרמטר של המודל( מעתיקים את המשקולות ל
+\begin_inset Formula $t\_net$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+במקרה שלנו השיטה הזו הורידה מאוד את השונות במהלך תהליך הלמידה
+\end_layout
+
+\begin_layout Standard
+בתכנון הרשת היה לנו
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+tradeoff
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+בין הזמנים שהיינו צריכים לעמוד בהם לבין גודל הרשת, רצינו רשת גדולה יותר
+ כדי שתוכל ללמוד ייצוג טוב יותר של הלוח אבל אז לא עמדנו בזמנים, בסוף זו
+ הארכיטקטורה שהגענו עליה כך שמגיעה לתוצאות טובות וכן עומדת בזמנים:
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename ddqn_model.jpeg
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+\bar under
+רשתות מתחרות - 
+\lang english
+Dueling DQN
+\lang hebrew
+ 
+\series default
+\bar default
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "dueling"
+
+\end_inset
+
+
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+כאמור ה
+\lang english
+q value
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ נועד לתאר: כמה טוב להיות במצב מסוים, וכמה טוב לקחת פעולה מתוך המצב הזה,
+ אז נוכל לפרק אותו בצורה הזו:
+\begin_inset Formula 
+\[
+Q\left(s,a\right)=A\left(s,a\right)+V\left(s\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+בשיטה הזו, אנו בונים שני מסלולים הלומדים בנפרד את שתי הפונקציות 
+\begin_inset Formula $A,V$
+\end_inset
+
+ ובשכבה האחרונה מאחדים אותם כדי יחד כדי למצוא את ה
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+q value
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ )כפי שניתן לראות בציור לפני ההפרדה למסלולים אנחנו לומדים איזשהו 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+embedding
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ללוח(
+\end_layout
+
+\begin_layout Standard
+הרעיון מאחורי השיטה זה שיכול להיות שישנם מצבים שפשוט טובים יותר/פחות, בלי
+ קשר לפעולה עצמה )לדוגמה אצלנו, מצב שבו נכנסים להתנגשות וודאית( ואנחנו רוצים
+ ללמוד את המצבים האלה ורק אחרי זה להלביש עליהם את הפעולה הטובה ביותר.
+\end_layout
+
+\begin_layout Standard
+תיאור הרשת:
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename dueling_model.jpeg
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+מבנה הזיכרון
+\end_layout
+
+\begin_layout Standard
+כפי שראינו בכיתה השתמשנו במנגנון ה
+\lang english
+replay memory
+\lang hebrew
+, זוהי מחסינת בגודל קבוע )פרמטר של המודל( ששומרת את המצבים האחרונים שראינו
+ במהלך המשחק.
+\end_layout
+
+\begin_layout Standard
+כלומר בכל פעולת
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+act
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+אנחנו שומרים את כל הרביעיה לתוך הזיכרון.
+\end_layout
+
+\begin_layout Standard
+כאשר במקרה של מוות )כלומר המצב החדש נמצא במקום אחר לגמרי מהמצב הקודם( לא
+ הכנסנו את המצב החדש לזיכרון, האינטואיציה מאחורי זה היא ברורה, זה רק יבלבל
+ את המודל ואין סיבה להתייחס למצב החדש כיוון שהוא רנדומלי.
+\end_layout
+
+\begin_layout Standard
+בתהליך הלמידה דגמנו באופן אחיד מתוך הזיכרון הזה את גודל ה
+\lang english
+batch
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ הנדרש )שזה כמובן עוד פרמטר של המודל(
+\end_layout
+
+\begin_layout Subsection*
+
+\lang english
+exploration-exploitation trade-of
+\end_layout
+
+\begin_layout Standard
+בחרנו לממש 
+\lang english
+
+\begin_inset Formula $\epsilon-$
+\end_inset
+
+greedy policy
+\lang hebrew
+, כלומר בהסתברות 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ אנחנו עושים פעולה רנדומית ובהסתברות 
+\begin_inset Formula $1-\epsilon$
+\end_inset
+
+ אנחנו מכניסים למודל.
+\end_layout
+
+\begin_layout Standard
+רצינו להוריד את כמות ה
+\lang english
+exploration
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+שעושים עם התקדמות הלמידה של המודל )כיוון שהמודל טוב יותר עם הזמן ולכן נרצה
+ לתת לו יותר משקל( ולכן הגדרנו שני פרמטרים למודל 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ מקסימלי ו 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ מינמלי, ועשינו אינטרפלוציה לינארית על גבי מספר הסיבובים על מנת לחשב את
+ האפסילון לכל סיבוב.
+\end_layout
+
+\begin_layout Standard
+השיטה הזו מאפשרת לנו בהתחלה לגלות הרבה מצבים ולהבין את המשחק, ולקראת הסוף
+ לקבל את התוצאה הטובה ביותר בלי מהלכים רנדומלים.
+\end_layout
+
+\begin_layout Standard
+פיצלנו את המהלכים הרנדומליים שלנו לשניים:
+\end_layout
+
+\begin_layout Itemize
+בהסתברות 
+\begin_inset Formula $\frac{\epsilon}{2}$
+\end_inset
+
+ עשינו מהלך רנדומי לגמרי )הסתברות אחידה בין 
+\begin_inset Formula $\left\{ R,F,L\right\} $
+\end_inset
+
+(
+\end_layout
+
+\begin_layout Itemize
+בהסתברות 
+\begin_inset Formula $\frac{\epsilon}{2}$
+\end_inset
+
+ עשינו מהלך חמדן
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+מה הכוונה במהלך חמדן? הרעיון הוא לחקות את פוליסת ה
+\lang english
+aviod
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ )עם שידרוג קל(, בנינו מיפוי בין הסימנים השונים על הלוח ובין ה"פרס" המתאים
+ להם, ואז בכל פעם שבחרנו במהלך חמדן הסתכלנו על שלושת הסימנים האפשריים לקבל
+ במהלך הבא )איזה סימן נקבל מכל אחת מהפעולות( ובחרנו את זו שתניב לנו את הרווח
+ הכי גבוהה ע"פ המיפוי שלנו.
+\end_layout
+
+\begin_layout Standard
+איך בנינו את המיפוי? בכל תור שמרנו את הסימן שהגענו אליו ואת הפרס שקיבלנו
+ כיוון שבחוקי המשחק לא הוגדר שהמיפוי בין סימן ל"פרס" הוא קבוע, ביצענו ממוצע
+ משקולל של כל הפעמיים שראינו את הסימן הזה והפרס המתאים.
+ וזו המפת "סימן - פרס" שלנו.
+\end_layout
+
+\end_deeper
+\begin_layout Subsection*
+ניסויים
+\end_layout
+
+\begin_layout Standard
+הערה - קוד תומך לניסויים נמצא ב
+\lang english
+experiments.py
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ בנוסף לשני ה
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+policies
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+הרלוונטיים
+\end_layout
+
+\begin_layout Standard
+עשינו המון ניסויים לא מתעודים שנועדו לבדוק את הפרמטרים השונים של המודל )החל
+ מגודל החלון, 
+\begin_inset Formula $\gamma$
+\end_inset
+
+,
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+batch_size
+\lang hebrew
+,
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+learning rate
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+וכולי(, את התוצאות שלהם ניתן לראות בפרמטרים שבחרנו
+\end_layout
+
+\begin_layout Standard
+יש לנו גרף של הניסוי הכי חשוב, שבו בחרנו את המודל, כפי שתארינו בחלק הראשון
+ בבנינו שני סוגים של מודלים
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+deep q learning
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ו
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+dueling deep q learning
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ולכל אחד מהם אפשר להוסיף את האלמנט של
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+double
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+2
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\numeric off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+רשתות שמורידות את השונות.
+\end_layout
+
+\begin_layout Standard
+נתאר את הניסוי:
+\end_layout
+
+\begin_layout Standard
+כשמנו את כל ארבעת המודלים לשחק אחד נגד השני, שמרנו את התוצאות בכל איטרציה
+ )ערכנו את הקוד של
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+Snake.py
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+כך שהוא מחזיר לנו את מערך התוצאות שהוא שומר(.
+\end_layout
+
+\begin_layout Standard
+סה"כ קיבלנו
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $50,000$
+\end_inset
+
+ תוצאות לכל אחד מארבעת המודלים, עשינו ממוצע רץ בגודל 
+\begin_inset Formula $5,000$
+\end_inset
+
+ )כמו שיקרה כאשר תעריכו את המודלים שלנו( וזו התוצאה:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename compare_models.png
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+מכאן ניתן לראות שהמודל הכי טוב זה 
+\lang english
+double dueling deep q network - DDDqn
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ וזה המודל שהגשנו כ
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+custom
+\end_layout
+
+\begin_layout Subsection*
+רעיונות נוספים
+\end_layout
+
+\begin_layout Standard
+רעיונות נוספים שניסנו ולא עבדו:
+\end_layout
+
+\begin_layout Itemize
+מיקום הראש - על מנת לא לאבד מידע הוספנו גם את המיקום של הראש לרשת.
+ )לא הוספנו ישירות לשכבה הראשונה, נרחיב על זה בהמשך בתיאור של הרשת(.
+\end_layout
+
+\begin_layout Itemize
+ללמוד רק על תוצאות משמעותיות - הרעיון דומה
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+success learning
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+שראינו ב
+\lang english
+ApproxiPong
+\lang hebrew
+: נכניס לזיכרון )כלומר למצבים שמהם הרשת לומדת( רק מצבים בהם התוצאה שונה
+ מ
+\begin_inset Formula $0$
+\end_inset
+
+, הסיבה לכך היא שרוב המצבים בעצם נותנים לנו
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+reward
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+של 
+\begin_inset Formula $0$
+\end_inset
+
+ ומעט מצבים מעניינים שמהם היינו רוצים ללמוד להימנע/לעשות אותם.
+ כאשר עשינו את זה הרשת לא הצליחה ללמוד בכלל הסיבה שחשבנו עליה זה שהיו מעט
+ מידי מצבים בזיכרון והוא לא הצליח להכליל כמו שצריך
+\end_layout
+
+\begin_layout Itemize
+לשנות את ה
+\lang english
+reward
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ כאשר אין פרס - ראינו שלפעמים כאשר 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ כבר יחסית קטן הנחש מחליט במשך כמה תורות רצוף לעשות 
+\begin_inset Formula $F$
+\end_inset
+
+ )זו הייתה בחירה ולא דיפולט(, אז על פעולות ללא 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+reward
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+שמרנו בזיכרון 
+\begin_inset Formula $-10^{-5}$
+\end_inset
+
+ במקום 
+\begin_inset Formula $0$
+\end_inset
+
+, כלומר מספר מאוד מאוד קטן על מנת לעודד את הרשת לא לבחור בפעולה הזו אלא
+ לנסות לעשות דברים אחרים.
+ בפועל קיבלנו תוצאות משמעותית פחות טובות
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "1"
+key "double_q_learning"
+
+\end_inset
+
+
+\lang english
+Van Hasselt, Hado, Guez, Arthur, and Silver, David.
+ Deep reinforcement learning with double q-learning.
+ arXiv preprint arXiv:1509.06461, 2015.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "2"
+key "dueling"
+
+\end_inset
+
+
+\lang english
+Wang, Z., de Freitas, N., and Lanctot, M.
+ Dueling Network Architectures for Deep Reinforcement Learning.
+ ArXiv e-prints, November 2015.
+\end_layout
+
+\end_body
+\end_document

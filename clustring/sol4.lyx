@@ -1,0 +1,2177 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language hebrew
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\lang english
+APML - Clustering
+\end_layout
+
+\begin_layout Author
+יובל יעקבי,
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+302247077
+\end_layout
+
+\begin_layout Section*
+חלק תאורטי
+\end_layout
+
+\begin_layout Subsubsection*
+שאלה 
+\numeric on
+1.1
+\numeric off
+ - התכנסות של 
+\lang english
+kmeans
+\end_layout
+
+\begin_layout Standard
+נזכר באלגוריתם - מטרתו לחלק 
+\begin_inset Formula $n$
+\end_inset
+
+ נקודות ל
+\begin_inset Formula $k$
+\end_inset
+
+ קלאסטרים, כאשר 
+\begin_inset Formula $k,n$
+\end_inset
+
+ קבועים
+\end_layout
+
+\begin_layout Standard
+ראשית נשים לב שיש מספר סופי של חלוקות שונות של 
+\begin_inset Formula $n$
+\end_inset
+
+ נקודות ל
+\begin_inset Formula $k$
+\end_inset
+
+ קלאסטרים - 
+\begin_inset Formula $k^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+כעת נראה שפונקציית המחיר - 
+\begin_inset Formula $\sum_{i=1}^{k}\sum_{x\in C_{i}}\left|\left|x-\mu_{i}\right|\right|^{2}$
+\end_inset
+
+ מונטונית יורדת זה אומר בהכרח שמתישהו נעצור כיוון שיש מספר סופי של מצבים.
+\end_layout
+
+\begin_layout Standard
+יש לנו
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+2
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\numeric off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+צעדים לאלגוריתם:
+\end_layout
+
+\begin_layout Enumerate
+בחירת מרכז - בצעד הזה כל אחת מהנקודות משויכת לאחד המרכזים ואנחנו בוחרים
+ את המרכז, כיוון שאנחנו בוחרים את המרכז כפונקציית אופטימיזציה שמשיגה מינימום
+ על 
+\begin_inset Formula $\sum_{x\in C_{i}}\left|\left|x-\mu_{i}\right|\right|^{2}$
+\end_inset
+
+ זה בהכרח יכול רק לרדת
+\end_layout
+
+\begin_layout Enumerate
+שלב הקלאסטרים - בשלב הזה כל נקודה נבחרת לאחד הקלאסטרים, גם כאן כל נקודה
+ משויכת למרכז הקרוב ביותר אליה - כלומר 
+\begin_inset Formula $C\left(x\right)=argmin_{k}\left|\left|x-\mu_{k}\right|\right|^{2}$
+\end_inset
+
+ גם כן זו בעיית אופטימיזציה של מינימום ולכן פונקציית המחיר יכולה רק לרדת...
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+בסה
+\begin_inset Quotes erd
+\end_inset
+
+כ בכל צעד פונקציית המחיר לא גדלה )כלומר קטנה או נשארת במקום(, וכיוון שיש
+ מספר סופי של מצבים מתישהו בהכרח נגיע למצב שנשאר במקום ולכן נעצור...
+\end_layout
+
+\end_deeper
+\begin_layout Subsubsection*
+שאלה 
+\numeric on
+1.2
+\numeric off
+ - 
+\lang english
+kmeans
+\lang hebrew
+ לא אופטימלי
+\end_layout
+
+\begin_layout Standard
+המרחק שנעבוד איתו הוא: 
+\begin_inset Formula $\sum_{i=1}^{k}\sum_{x\in C_{i}}\left|\left|x-\mu_{i}\right|\right|^{2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+דוגמא לאתחול לא טוב - נחשוב על מלבן צר וארוך כלומר נקודות הן: 
+\begin_inset Formula $\left\{ \left(0,0\right),\left(0,10\right),\left(1,0\right),\left(1,10\right)\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+נניח שהאתחול היה בדיוק באמצע הצלע של כל אחת מהצלעות הארוכות, כלומר 
+\begin_inset Formula $\left\{ \hat{a}=\left(0,5\right),\hat{b}=\left(1,5\right)\right\} $
+\end_inset
+
+ )לצורך נוחות סימנו את שמות הקלאסטרים ב
+\begin_inset Formula $\hat{a},\hat{b}$
+\end_inset
+
+(
+\end_layout
+
+\begin_layout Standard
+בשלב הבא נקבל את ההשמות הבאות: 
+\begin_inset Formula 
+\[
+\left\{ \left(0,0\right),\left(0,10\right)\right\} \in C_{\hat{a}}\land\left\{ \left(1,0\right),\left(1,10\right)\right\} \in C_{\hat{b}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+בשלב הבא מרכזי הקלאסטרים לא יזוזו כיוון שהמרכז הוא בדיוק באמצע של הנקודות.
+\end_layout
+
+\begin_layout Standard
+ההשמה הזו כל נקודה נמצאת במרחק של 
+\begin_inset Formula $\left(5\right)^{2}$
+\end_inset
+
+ ממרכז הקלאסטר שלה, כלומר סה
+\begin_inset Quotes erd
+\end_inset
+
+כ המרחק הוא
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $100$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+אם נבחר מרכזי קלאסטרים: 
+\begin_inset Formula $\left\{ a=\left(0.5,0\right),b=\left(0.5,10\right)\right\} $
+\end_inset
+
+, הקלאסטרים שנקבל יהיו אופטימליים עם מרחק 
+\begin_inset Formula $\left(\frac{1}{2}\right)^{2}$
+\end_inset
+
+ מהמרכז )לכל נקודה(, כלומר סה
+\begin_inset Quotes erd
+\end_inset
+
+כ המרחק הוא 
+\begin_inset Formula $1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ההשמה: 
+\begin_inset Formula 
+\[
+\left\{ \left(0,0\right),\left(1,0\right)\right\} \in C_{a}\land\left\{ \left(0,10\right),\left(1,10\right)\right\} \in C_{b}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+דוגמא עם יותר ממרכז אופטימלי אחד: נתבונן בריבוע 
+\begin_inset Formula $\left\{ \left(0,0\right),\left(0,1\right),\left(1,0\right),\left(1,1\right)\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+יש לנו
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+2
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\numeric off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+קבוצות של מרכזים שישיגו מרחק 
+\begin_inset Formula $\left(\frac{1}{2}\right)^{2}$
+\end_inset
+
+ לכל נקודה - סה
+\begin_inset Quotes erd
+\end_inset
+
+כ 
+\begin_inset Formula $1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+השמות:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left\{ \left(0,0.5\right),\left(1,0.5\right)\right\} $
+\end_inset
+
+ - כלומר הנקודות שחולקות את אותו ציר 
+\begin_inset Formula $y$
+\end_inset
+
+ יהיו ביחד
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\left\{ \left(0.5,0\right),\left(0.5,1\right)\right\} $
+\end_inset
+
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+- כלומר הנקודות שחולקות את אותו ציר 
+\begin_inset Formula $x$
+\end_inset
+
+ יהיו ביחד
+\end_layout
+
+\end_deeper
+\begin_layout Subsubsection*
+שאלה 
+\numeric on
+1.3
+\numeric off
+ - איתחול של 
+\lang english
+kmeans
+\end_layout
+
+\begin_layout Standard
+נגדיר - 
+\begin_inset Quotes eld
+\end_inset
+
+מאורע טוב
+\begin_inset Quotes erd
+\end_inset
+
+ - מאורע שבו האיתחול )הרנדומי( של
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+kmenas
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+בחר כל מרכז בקלאסטר שונה.
+\end_layout
+
+\begin_layout Standard
+נסמן ב
+\begin_inset Formula $\alpha_{1},\dots,\alpha_{k}$
+\end_inset
+
+ את הסיכוי לדגום נקודה מכל אחד מ
+\begin_inset Formula $k$
+\end_inset
+
+ הקלאסטרים
+\end_layout
+
+\begin_layout Enumerate
+נניח שאנחנו דוגמים באקראי נקודות לפי הסתברות אחידה, אזי מאורע טוב הוא:
+\begin_inset Formula 
+\[
+k!\Pi_{i=1}^{k}\alpha_{i}
+\]
+
+\end_inset
+
+ נסביר - הסדר לא משנה, לכן אנחנו כופלים ב
+\begin_inset Formula $k!$
+\end_inset
+
+ )עושים 
+\begin_inset Formula $k$
+\end_inset
+
+ בחירות, בכל שלב לא אכפת לנו איזה אחד מהקלאסטרים נבחר(
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+כפל - אנחנו רוצים לבחור אחד מכל קלאסטר, כלומר אנחנו רוצים לבחור: 
+\begin_inset Formula $\alpha_{1}\land\alpha_{2}\land\dots\land\alpha_{k}$
+\end_inset
+
+, כלומר בהסתברות - כפל.
+\end_layout
+
+\begin_layout Standard
+כעת אנחנו מתעניינים בתוחלת, כאמור זהו משתנה מקרי גאומרטי ולכן:
+\begin_inset Formula 
+\[
+\mathbb{E}\left[X\right]=\frac{1}{k!\Pi_{i=1}^{k}\alpha_{i}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+כאשר 
+\begin_inset Formula $X$
+\end_inset
+
+ הוא מספר הניסיונות שצריך לעשות עד שנקבל הגרלה מוצלחת
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+הסיכוי הכי טוב שלנו הוא כאשר כל הקלאסטרים יהיו עם אותה הסתברות, כלומר 
+\begin_inset Formula $\alpha_{1}=\alpha_{2}=\dots=\alpha_{k}=\frac{1}{k}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+הסיבה לכך היא שאנחנו רוצים לבחור אחד לכל קלאסטר, אם יהיה קלאסטר שהסיכוי
+ שלו גדול יותר, אזי זה אומר בהכרח שיהיה אחד שהסיכוי שלו קטן יותר ויש פחות
+ סיכוי שנבחר בו.
+\end_layout
+
+\begin_layout Standard
+כלומר 
+\begin_inset Formula 
+\[
+\mathbb{E}\left[X\right]\ge\frac{1}{k!\Pi_{i=1}^{k}\frac{1}{k}}=\frac{k^{k}}{k!}\overset{stirling}{\approx}\frac{k^{k}}{\frac{k^{k}}{e^{k}}}=e^{k}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+זוהי כמובן לא התוצאה שהיינו רוצים לקבל, כלומר אם אנחנו רוצים 
+\begin_inset Formula $10$
+\end_inset
+
+ קלאסטרים נצטרך להריץ את האלגוריתם 
+\begin_inset Formula $e^{10}\approx22,000$
+\end_inset
+
+ פעמיים ולבחור את התוצאה הטובה ביותר )וכמובן שזה גדל אקספוננציאלית(.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+כמו כן המצב בחיים האמיתים כנראה גרוע יותר כי אני לא חושב שההתפלגות בין קלאסטרים
+ תיהיה אחידה.
+\end_layout
+
+\begin_layout Standard
+לעומת זאת, החישוב הזה נעשה אם אנחנו בוחרים נקודה מכל קלאסטר, אבל אין סיבה
+ שהמרכז של קלאסטר לא 
+\begin_inset Quotes eld
+\end_inset
+
+ינדוד
+\begin_inset Quotes erd
+\end_inset
+
+ במהלך האיטרציות של האלגוריתם, כלומר גם אם התחלנו עם
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\begin_inset Formula $2$
+\end_inset
+
+ מרכזים באותו קלאסטר זה לא אומר שלא נקבל תוצאה אופטימלית, בנוסף לכך הרבה
+ פעמיים נסתפק במקסימום לוקאלי ולא גלובלי, כלומר אנחנו יכולים לקבל קלאסטרים
+ ממש טובים ולא אופטימלים כי פספסנו כמה נקודות וזה עדיין בסדר.
+\end_layout
+
+\begin_layout Standard
+וכמובן שיש לנו
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+kmeans++
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ )וכנראה אלגוריתמים אחרים שלא למדנו :((
+\end_layout
+
+\end_deeper
+\begin_layout Section*
+חלק פרקטי
+\end_layout
+
+\begin_layout Standard
+לאורך התרגיל רשמתי
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+kmeans
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+, הכוונה כמובן ל
+\lang english
+kmeans++
+\end_layout
+
+\begin_layout Subsubsection*
+בחינת
+\family roman
+\series bold
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+K
+\lang hebrew
+-שונים - אלגוריתם
+\family roman
+\series bold
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+Kmeans
+\end_layout
+
+\begin_layout Standard
+על מנת למצוא את ה
+\begin_inset Formula $k$
+\end_inset
+
+ המתאים ביותר לדאטא השתמשתי בשיטת 
+\begin_inset Quotes eld
+\end_inset
+
+המרפק
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+הדאטא הסינטטני שעבדתי עליו היה דאטא שייצרתי לבד - יצרתי 
+\begin_inset Formula $k$
+\end_inset
+
+ גאוסיאנים, עבור כל אחד דגמתי תוחלת ושונות.
+\end_layout
+
+\begin_layout Standard
+על מנת שאוכל להציג את התוצאות לאחר הרצת הקלאסטר עשיתי את זה בדו מימד
+\end_layout
+
+\begin_layout Standard
+על מנת להציג כמה טוב כל אחד מהקלאסטרים השתמשנו באלגוריתם מהכיתה כלומר: 
+\begin_inset Formula $\sum_{x}\left|\left|x-\mu_{k}\right|\right|^{2}$
+\end_inset
+
+, כאשר 
+\begin_inset Formula $\mu_{k}$
+\end_inset
+
+ הוא מרכז הקלאסטר שבחרנו ל
+\begin_inset Formula $x$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+כמו שדיברנו בכיתה אנחנו נצפה לראות גרף יורד ממש, כאשר באיזשהו שלב הירידה
+ תתמתן ובקושי נקבל שיפור, כלומר כל הקלאסטרים יחסית הדוקים ואנחנו ממשיכים
+ לפצל בתוך הקלאסטר ולא בין קלאסטרים שונים.
+\end_layout
+
+\begin_layout Standard
+נשים לב שיכול להיות שהירידה תיהיה לפני שנגיע למספר הקלאסטרים, המצופה כיוון
+ שיכול להיות שהקלאסטרים יחסית קרובים...
+\end_layout
+
+\begin_layout Standard
+תוצאות:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/l2_cost_kmeans_on_20_multivariate_gaussians_-_costs.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+כפי שציפנו קיבלנו גרף יורד ממש כאשר בסביבות 
+\begin_inset Formula $10$
+\end_inset
+
+ או 
+\begin_inset Formula $12$
+\end_inset
+
+ הוא ממש מתייצב, אבל הירידה הגדולה קוראת עד 
+\begin_inset Formula $k=5$
+\end_inset
+
+, נסתכל על כמה אופציות כדי לבחור את הקלאסטר הכי טוב
+\end_layout
+
+\begin_layout Standard
+נשים לב שיש לנו כמה נקודות 
+\begin_inset Quotes eld
+\end_inset
+
+שונות
+\begin_inset Quotes erd
+\end_inset
+
+ שהן לא יורדות ממש, הסבר אחד לזה יכול להיות מכיוון שיש לנו פה אלמנט רנדומי
+ של אתחול המשתנים...
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/kmeans_multivariate_gaussians_data,_k:_15.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/kmeans_multivariate_gaussians_data,_k:_5.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+אנחנו רואים שהירידה בין 
+\begin_inset Formula $15$
+\end_inset
+
+ ל
+\begin_inset Formula $5$
+\end_inset
+
+ כן משתלמת במקרה הזה, והצבעים של הקלאסטרים די תואמים את מה שאנחנו כבני אדם
+ היינו עושים...
+\end_layout
+
+\begin_layout Subsubsection*
+אלגוריתם
+\family roman
+\series bold
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+Kmeans
+\family roman
+\series bold
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ - על תמונת 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+APML
+\end_layout
+
+\begin_layout Standard
+על מנת להמשיך שהאלגוריתם אכן עובד, אציג את האלגוריתם גם על התמונה של
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+APML
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/kmeans_apml_pic_data,_k:_9.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+היינו רוצים לחלק לקלאסטרים אחרים, אבל עם היכרות עם השיטה של
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+kmeans
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ידענו שהוא לא יצליח, כיוון שהמרחקים בין האותיות לפעמים קטנים ולעומת זאת
+ האותיות גדולות, כלומר סביר שלא נראה חלוקה ממש של האותיות.
+\end_layout
+
+\begin_layout Standard
+נקווה שהספקטרלי יצליח יותר :(
+\end_layout
+
+\begin_layout Subsection*
+פירוק ספקטרלי
+\end_layout
+
+\begin_layout Standard
+כמו כן מיממשתי את אלגוריתם הפירוק הספקטרלי, עם
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+2
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\numeric off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+סוגי של נורמליזציה )כמתבקש בתרגיל(:
+\end_layout
+
+\begin_layout Subsubsection*
+שכנים
+\end_layout
+
+\begin_layout Standard
+לא דיברנו בכיתה על אלגוריתם סגור לבחור את 
+\begin_inset Formula $m$
+\end_inset
+
+ לכן עשיתי 
+\begin_inset Quotes eld
+\end_inset
+
+ניסוי וטעיה
+\begin_inset Quotes erd
+\end_inset
+
+ ציירתי את הקלאסטרים עם כמה 
+\begin_inset Formula $m$
+\end_inset
+
+ שונים בטווח יחסית רחב וקיבלתי:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/spectral_APML_pic_data,_mnn:_5.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+כמובן שזה לא המון סוגים שונים של 
+\begin_inset Formula $m$
+\end_inset
+
+ וזה כנראה לא תיהיה בחירה אופטימלית, אבל היא תעזור לנו להבין את הכיוון...
+\end_layout
+
+\begin_layout Standard
+ע
+\begin_inset Quotes erd
+\end_inset
+
+פ הציורים האלה בחרתי 
+\begin_inset Formula $m=55$
+\end_inset
+
+, כיוון שה
+\begin_inset Quotes erd
+\end_inset
+
+קיבוץ
+\begin_inset Quotes erd
+\end_inset
+
+ )
+\lang english
+clustering
+\lang hebrew
+( לא מתבצע ב
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+ אלא במימד של הע
+\begin_inset Quotes erd
+\end_inset
+
+ע קשה להסביר למה פרמטר אחד טוב מאחר, אנחנו כן רואים בתוצאות ש:
+\end_layout
+
+\begin_layout Itemize
+עבור 
+\begin_inset Formula $m=5$
+\end_inset
+
+ יש נקודות אדומות במקומות שלא היינו מצפים )למשל בתחית הM(, כמו כן הצלע הימנית
+ של M מופרדת משאר האות והאות הבאה
+\end_layout
+
+\begin_layout Itemize
+עבור 
+\begin_inset Formula $m=105$
+\end_inset
+
+ השבירה של 
+\begin_inset Formula $2$
+\end_inset
+
+ מוזרה, גם האות 
+\begin_inset Formula $0$
+\end_inset
+
+ לא נכנסה לקלסטר בודד
+\end_layout
+
+\begin_layout Itemize
+עבור 
+\begin_inset Formula $m=155$
+\end_inset
+
+, שוב 
+\begin_inset Formula $2,0,8$
+\end_inset
+
+ התפצלו למספר קלאסטרים
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+אבל זה די באוויר, ומישהו אחר היה יכול לבחור פרמטר שונה...
+ אין לנו פה איזשהו מדד מרחק או פונקציית מחיר שיכולה להכריע כל וויוכוח בנושא.
+\end_layout
+
+\begin_layout Standard
+בנוסף ציירתי מפת חום שמתארת את מדד הקרבה )כמו שהתבקשנו בסעיף: 
+\begin_inset Formula $2.4.1$
+\end_inset
+
+(
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/spectral_clustering_using_mnn_and_param:_55000.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+זה בשחור לבן מכיוון שאנחנו מסתכלים על השכנים הקרובים ביותר
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ - כלומר כל ערך במטריצה יהיה 
+\begin_inset Formula $1,0$
+\end_inset
+
+ רואים די יפה שבצד שמאל הכל מבולגן, ובצד ימין יש יחסית סדר ואנחנו רואים
+ כמה בלוקים שמציינים על עמודות ושורות שנמצאות באותו קלאסטר והם אכן עם ערכים
+ דומים.
+\end_layout
+
+\end_deeper
+\begin_layout Subsubsection*
+קרנל גאוסיאני
+\end_layout
+
+\begin_layout Standard
+על מנת לבחור את 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ השתמשתי בשיטה שראינו בכיתה, ציירתי את היסטוגרמת המרחקים:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/APML_pic_-_distances_histogram.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+כיוון שהדאטא מתפלג יחסית גאוסיאני וכמו שראינו בכיתה, בחרתי את 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ לפי אחוזון 
+\begin_inset Formula $5$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+גם כאן ציירתי את מפת החום, הפעם הערכים הם לא 
+\begin_inset Formula $0,1$
+\end_inset
+
+ בגלל סוג הפעולה שעשינו )הפעלנו קרנל גאוסיאני שרק ממצע את הערכים(:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/spectral_clustering_using_gaussian_kernel_and_param:_53226.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+והחלוקה לקלאסטרים שנקבל במקרה הזה היא:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/gaussian_kernel_APML_pic_data_-_sigma:_53226.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+דאטא ביולגי
+\end_layout
+
+\begin_layout Standard
+על מנת להציג את הדאטא הביולגי ציירתי קורלציות בין כל התנאים, הסיבה לכך היא
+ שעשינו את הקלאסטרים במימד הגבוהה ולכן נרצה להשוות גם במימד הגבוה.
+\end_layout
+
+\begin_layout Standard
+אז לקחנו את הדאטא המקורי, ומיינו אותו לפי הקלאסטרים, כלומר 
+\begin_inset Formula $\left|C_{0}\right|$
+\end_inset
+
+ השורות הראשונות זה קלאסטר 
+\begin_inset Formula $0$
+\end_inset
+
+, 
+\begin_inset Formula $\left|C_{1}\right|$
+\end_inset
+
+ השורות הבאות מקלאסטר
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $1$
+\end_inset
+
+ וכן האלה...
+\end_layout
+
+\begin_layout Subsubsection*
+אלגוריתם
+\family roman
+\series bold
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+kmeans 
+\end_layout
+
+\begin_layout Standard
+שוב השתמשנו בשיטת המרפק על מנת לבחור את הטווח של 
+\begin_inset Formula $k$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/kmeans_-_l2_cost_microarray_-_costs.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+אנחנו רואים צניחה משמעותית סביב ב
+\begin_inset Formula $4-5$
+\end_inset
+
+ קלאסטרים הראשונים, ואחרי זה כל קלאסטר משפר אותנו בפחות )עדיין בהמון אבל
+ באופן יחסי בפחות(.
+\end_layout
+
+\begin_layout Standard
+על מנת לבדוק מה הקלאסטר הכי טוב עשיתי מספר נסיונות עם 
+\begin_inset Formula $k$
+\end_inset
+
+ שונים, הנה חלק מהתוצאות:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_kmeans_k:_4.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+נתמקד ב
+\begin_inset Formula $4$
+\end_inset
+
+ וננסה להבין מה קורה בו )בעזרת זה גם נסביר למה הוא הכי טוב( אנחנו רואים
+ 
+\begin_inset Formula $2$
+\end_inset
+
+ קלאסטרים די מובהקים, אחד בין 
+\begin_inset Formula $0.3-0.5$
+\end_inset
+
+ בצבעים סגולים לאורך כמעט כל התנאים הגנים מתבטאים בצורה דומה וחלשה )הגנים
+ השייכים לקלאסטר הזה(, מיד אחריו )כלפי מטה( אנחנו רואים עוד קלאסטר שבו הגנים
+ דווקא מתבטאים בצורה חזקה.
+\end_layout
+
+\begin_layout Standard
+חות משני אלה, אנחנו רואים עוד שני קלאסטרים, אחד מעל הסגול שהוא הקלאסטר הגדול
+ ובו רוב הערכים נמצאים יחסית באמצע ועוד קלאסטר מתחת לאדום גם בו כמעט הכל
+ באמצע חוץ מעמודה די רחבה באזור 
+\begin_inset Formula $0.8-0.9$
+\end_inset
+
+ )בציר 
+\begin_inset Formula $x$
+\end_inset
+
+( שם הערכים יחסית נמוכים יותר.
+\end_layout
+
+\begin_layout Standard
+כאשר אנחנו משתמשים ב
+\begin_inset Formula $k$
+\end_inset
+
+ שונים אנחנו רואים שהם מתחלקים עדיין ל
+\begin_inset Formula $4$
+\end_inset
+
+ הקלאסטרים האלה רק האחרים טיפה יותר מופרדים אבל אין לזה ממש בסיס על סמך
+ מה שאנחנו רואים כאן...
+ לכן אם נרצה הכללה טובה יותר רצוי מספר קטן יותר של קלאסטרים
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_kmeans_k:_2.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_kmeans_k:_6.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_kmeans_k:_25.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+אלגוריתם
+\family roman
+\series bold
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+spectral
+\end_layout
+
+\begin_layout Standard
+ראשית לבחירה 
+\begin_inset Formula $\sigma$
+\end_inset
+
+, כאמור ציירתי את היסטוגרמת המרחקים:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/microarray_-_distances_histogram.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+הפעם ההתפלגות היא לא גאוסיאנית, אלא עם זנב ימני ארוך.
+\end_layout
+
+\begin_layout Standard
+כלומר מצד שמאל של הפיק העלייה היא חדה יותר, ולכן הפעם בחרתי את 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ להיות האחוזון ה
+\begin_inset Formula $2$
+\end_inset
+
+ ולא ה
+\begin_inset Formula $5$
+\end_inset
+
+ כפי שהומלץ בכיתה.
+\end_layout
+
+\begin_layout Standard
+מבחינת 
+\begin_inset Formula $k$
+\end_inset
+
+, עשיתי מספר ניסויים שאפשר לראות כאן:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_spectral_sigma:_5624,_k:_2.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_spectral_sigma:_5624,_k:_4.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_spectral_sigma:_5624,_k:_6.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/micro_array_-_spectral_sigma:_5624,_k:_25.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+תוצאות די דומות ל
+\lang english
+kmeans
+\lang hebrew
+, אין לי מה להוסיף :(
+\end_layout
+
+\begin_layout Subsection*
+הורדת מימד -
+\family roman
+\series bold
+\shape up
+\size large
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+t-SNE
+\end_layout
+
+\begin_layout Standard
+כנדרש בתרגיל הרצתי את הדאטא של
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+MNIST
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ עם 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+t-SNE
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ועם
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+PCA
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+והנה התוצאות:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/PCA_embedding_-_mnist.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename plots/t-SNE_embedding_-_mnist.png
+	scale 70
+
+\end_inset
+
+ד
+\end_layout
+
+\begin_layout Standard
+כפי שניתן לראות ב
+\lang english
+PCA
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ קשה לראות הפרדה בין הספרות השונות...
+\end_layout
+
+\begin_layout Standard
+לעומת זאת עם
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+t-SNE
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+ישנה הפרדה בין הספרות, כלומר הורדת המימד שמרה על התכונות של הספרות השונות
+ כמו שהיינו מצפים, זה ההבדל בין האלגוריתמים הם פותרים בעיות אופטימיזציה
+ שונות
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+t-SNE
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ - שמירה על המרחקים במימד הנמוך, 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+\lang english
+PCA
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\lang hebrew
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+הסברה של כמה שיותר מהשונות של הדאטא...
+\end_layout
+
+\end_body
+\end_document
